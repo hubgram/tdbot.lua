@@ -24,7 +24,7 @@ function tdbot_update_callback (data)
     local msg = data.message
     if msg.content._ == "messageText" then
       if msg.content.text == "ping" then
-		    tdbot.sendText(msg.chat_id, 0, true, true, nil, "PONG")
+	tdbot.sendText(msg.chat_id, 0, true, true, nil, "PONG")
       end
     end
   end
