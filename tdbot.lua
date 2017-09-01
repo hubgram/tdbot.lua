@@ -61,7 +61,7 @@ end
 
 -- User can send bold, italic, and monospace text uses HTML or Markdown format.
 function getParseMode(parse_mode)
-  local P = nil
+  local P
   if parse_mode then
     local mode = parse_mode:lower()
 
@@ -89,13 +89,12 @@ function sendRequest(request_id, chat_id, reply_to_message_id, disable_notificat
 end
 
 -- Returns current authorization state, offline request
-local function getAuthState(cb, cmd)
+function I.getAuthState(cb, cmd)
   tdbot_function ({
     _ = "getAuthState",
   }, cb or dl_cb, cmd)
 end
 
-I.getAuthState = getAuthState
 
 -- Sets user's phone number and sends authentication code to the user.
 -- Works only when getAuthState returns authStateWaitPhoneNumber.
@@ -103,7 +102,7 @@ I.getAuthState = getAuthState
 -- @phone_number User's phone number in any reasonable format
 -- @allow_flash_call Pass True, if code can be sent via flash call to the specified phone number
 -- @is_current_phone_number Pass true, if the phone number is used on the current device. Ignored if allow_flash_call is False
-local function setAuthPhoneNumber(phone_number, allow_flash_call, is_current_phone_number, cb, cmd)
+function I.setAuthPhoneNumber(phone_number, allow_flash_call, is_current_phone_number, cb, cmd)
   tdbot_function ({
     _ = "setAuthPhoneNumber",
     phone_number = phone_number,
@@ -112,18 +111,16 @@ local function setAuthPhoneNumber(phone_number, allow_flash_call, is_current_pho
   }, cb or dl_cb, cmd)
 end
 
-I.setAuthPhoneNumber = setAuthPhoneNumber
 
 -- Resends authentication code to the user.
 -- Works only when getAuthState returns authStateWaitCode and next_codetype of result is not null.
 -- Returns authStateWaitCode on success
-local function resendAuthCode(dl_cb, cmd)
+function I.resendAuthCode(dl_cb, cmd)
   tdbot_function ({
     _ = "resendAuthCode",
   }, cb or dl_cb, cmd)
 end
 
-I.resendAuthCode = resendAuthCode
 
 -- Checks authentication code.
 -- Works only when getAuthState returns authStateWaitCode.
@@ -131,7 +128,7 @@ I.resendAuthCode = resendAuthCode
 -- @code Verification code from SMS, Telegram message, phone call or flash call
 -- @first_name User first name, if user is yet not registered, 1-255 characters
 -- @last_name Optional user last name, if user is yet not registered, 0-255 characters
-local function checkAuthCode(code, first_name, last_name, cb, cmd)
+function I.checkAuthCode(code, first_name, last_name, cb, cmd)
   tdbot_function ({
     _ = "checkAuthCode",
     code = code,
@@ -140,80 +137,72 @@ local function checkAuthCode(code, first_name, last_name, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.checkAuthCode = checkAuthCode
-
 -- Checks password for correctness.
 -- Works only when getAuthState returns authStateWaitPassword.
 -- Returns authStateOk on success
 -- @password Password to check
-local function checkAuthPassword(password, cb, cmd)
+function I.checkAuthPassword(password, cb, cmd)
   tdbot_function ({
     _ = "checkAuthPassword",
     password = password
   }, cb or dl_cb, cmd)
 end
 
-I.checkAuthPassword = checkAuthPassword
 
 -- Requests to send password recovery code to email.
 -- Works only when getAuthState returns authStateWaitPassword.
 -- Returns authStateWaitPassword on success
-local function requestAuthPasswordRecovery(dl_cb, cmd)
+function I.requestAuthPasswordRecovery(dl_cb, cmd)
   tdbot_function ({
     _ = "requestAuthPasswordRecovery",
   }, cb or dl_cb, cmd)
 end
 
-I.requestAuthPasswordRecovery = requestAuthPasswordRecovery
 
 -- Recovers password with recovery code sent to email.
 -- Works only when getAuthState returns authStateWaitPassword.
 -- Returns authStateOk on success
 -- @recovery_code Recovery code to check
-local function recoverAuthPassword(recovery_code, cb, cmd)
+function I.recoverAuthPassword(recovery_code, cb, cmd)
   tdbot_function ({
     _ = "recoverAuthPassword",
     recovery_code = recovery_code
   }, cb or dl_cb, cmd)
 end
 
-I.recoverAuthPassword = recoverAuthPassword
 
 -- Logs out user.
 -- If force == false, begins to perform soft log out, returns authStateLoggingOut after completion.
 -- If force == true then succeeds almost immediately without cleaning anything at the server, but returns error with code 401 and description "unauthorized"
 -- @force If true, just delete all local data. Session will remain in list of active sessions
-local function resetAuth(force, cb, cmd)
+function I.resetAuth(force, cb, cmd)
   tdbot_function ({
     _ = "resetAuth",
     force = force or nil
   }, cb or dl_cb, cmd)
 end
 
-I.resetAuth = resetAuth
 
 -- Check bot's authentication token to log in as a bot.
 -- Works only when getAuthState returns authStateWaitPhoneNumber.
 -- Can be used instead of setAuthPhoneNumber and checkAuthCode to log in.
 -- Returns authStateOk on success
 -- @token Bot token
-local function checkAuthBotToken(token, cb, cmd)
+function I.checkAuthBotToken(token, cb, cmd)
   tdbot_function ({
     _ = "checkAuthBotToken",
     token = token
   }, cb or dl_cb, cmd)
 end
 
-I.checkAuthBotToken = checkAuthBotToken
 
 -- Returns current state of two-step verification
-local function getPasswordState(dl_cb, cmd)
+function I.getPasswordState(dl_cb, cmd)
   tdbot_function ({
     _ = "getPasswordState",
   }, cb or dl_cb, cmd)
 end
 
-I.getPasswordState = getPasswordState
 
 -- Changes user password.
 -- If new recovery email is specified, then error emailUNCONFIRMED is returned and password change will not be applied until email confirmation.
@@ -223,7 +212,7 @@ I.getPasswordState = getPasswordState
 -- @new_hint New password hint, can be empty
 -- @set_recovery_email Pass True, if recovery email should be changed
 -- @new_recovery_email New recovery email, may be empty
-local function setPassword(old_password, new_password, new_hint, set_recovery_email, new_recovery_email, cb, cmd)
+function I.setPassword(old_password, new_password, new_hint, set_recovery_email, new_recovery_email, cb, cmd)
   tdbot_function ({
     _ = "setPassword",
     old_password = old_password,
@@ -234,19 +223,17 @@ local function setPassword(old_password, new_password, new_hint, set_recovery_em
   }, cb or dl_cb, cmd)
 end
 
-I.setPassword = setPassword
 
 -- Returns set up recovery email.
 -- This method can be used to verify a password provided by the user
 -- @password Current user password
-local function getRecoveryEmail(password, cb, cmd)
+function I.getRecoveryEmail(password, cb, cmd)
   tdbot_function ({
     _ = "getRecoveryEmail",
     password = password
   }, cb or dl_cb, cmd)
 end
 
-I.getRecoveryEmail = getRecoveryEmail
 
 -- Changes user recovery email.
 -- If new recovery email is specified, then error emailUNCONFIRMED is returned and email will not be changed until email confirmation.
@@ -254,7 +241,7 @@ I.getRecoveryEmail = getRecoveryEmail
 -- If new_recovery_email coincides with the current set up email succeeds immediately and aborts all other requests waiting for email confirmation
 -- @password Current user password
 -- @new_recovery_email New recovery email
-local function setRecoveryEmail(password, new_recovery_email, cb, cmd)
+function I.setRecoveryEmail(password, new_recovery_email, cb, cmd)
   tdbot_function ({
     _ = "setRecoveryEmail",
     password = password,
@@ -262,32 +249,26 @@ local function setRecoveryEmail(password, new_recovery_email, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.setRecoveryEmail = setRecoveryEmail
-
 -- Requests to send password recovery code to email
-local function requestPasswordRecovery(dl_cb, cmd)
+function I.requestPasswordRecovery(dl_cb, cmd)
   tdbot_function ({
     _ = "requestPasswordRecovery",
   }, cb or dl_cb, cmd)
 end
 
-I.requestPasswordRecovery = requestPasswordRecovery
-
 -- Recovers password with recovery code sent to email
 -- @recovery_code Recovery code to check
-local function recoverPassword(recovery_code, cb, cmd)
+function I.recoverPassword(recovery_code, cb, cmd)
   tdbot_function ({
     _ = "recoverPassword",
     recovery_code = tostring(recovery_code)
   }, cb or dl_cb, cmd)
 end
 
-I.recoverPassword = recoverPassword
-
 -- Creates new temporary password for payments processing
 -- @password Persistent user password 
 -- @valid_for Time before temporary password will expire, seconds. Should be between 60 and 86400
-local function createTemporaryPassword(password, valid_for, cb, cmd)
+function I.createTemporaryPassword(password, valid_for, cb, cmd)
   local valid_for = valid_for or 60
 
   if valid_for < 60 then
@@ -303,109 +284,89 @@ local function createTemporaryPassword(password, valid_for, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.createTemporaryPassword = createTemporaryPassword
-
 -- Returns current logged in user
-local function getMe(cb, cmd)
+function I.getMe(cb, cmd)
   tdbot_function ({
     _ = "getMe",
   }, cb or dl_cb, cmd)
 end
 
-I.getMe = getMe
-
 -- Returns information about a user by its identifier, offline request if current user is not a bot
 -- @user_id User identifier
-local function getUser(user_id, cb, cmd)
+function I.getUser(user_id, cb, cmd)
   tdbot_function ({
     _ = "getUser",
     user_id = user_id
   }, cb or dl_cb, cmd)
 end
 
-I.getUser = getUser
-
 -- Returns full information about a user by its identifier
 -- @user_id User identifier
-local function getUserFull(user_id, cb, cmd)
+function I.getUserFull(user_id, cb, cmd)
   tdbot_function ({
     _ = "getUserFull",
     user_id = user_id
   }, cb or dl_cb, cmd)
 end
 
-I.getUserFull = getUserFull
-
 -- Returns information about a group by its identifier, offline request if current user is not a bot
 -- @group_id Group identifier
-local function getGroup(group_id, cb, cmd)
+function I.getGroup(group_id, cb, cmd)
   tdbot_function ({
     _ = "getGroup",
     group_id = getChatId(group_id)._
   }, cb or dl_cb, cmd)
 end
 
-I.getGroup = getGroup
-
 -- Returns full information about a group by its identifier
 -- @group_id Group identifier
-local function getGroupFull(group_id, cb, cmd)
+function I.getGroupFull(group_id, cb, cmd)
   tdbot_function ({
     _ = "getGroupFull",
     group_id = getChatId(group_id)._
   }, cb or dl_cb, cmd)
 end
 
-I.getGroupFull = getGroupFull
-
 -- Returns information about a channel by its identifier, offline request if current user is not a bot
 -- @channel_id Channel identifier
-local function getChannel(channel_id, cb, cmd)
+function I.getChannel(channel_id, cb, cmd)
   tdbot_function ({
     _ = "getChannel",
     channel_id = getChatId(channel_id)._
   }, cb or dl_cb, cmd)
 end
 
-I.getChannel = getChannel
-
 -- Returns full information about a channel by its identifier, cached for at most 1 minute
 -- @channel_id Channel identifier
-local function getChannelFull(channel_id, cb, cmd)
+function I.getChannelFull(channel_id, cb, cmd)
   tdbot_function ({
     _ = "getChannelFull",
     channel_id = getChatId(channel_id)._
   }, cb or dl_cb, cmd)
 end
 
-I.getChannelFull = getChannelFull
-
 -- Returns information about a secret chat by its identifier, offline request
 -- @secret_chat_id Secret chat identifier
-local function getSecretChat(secret_chat_id, cb, cmd)
+function I.getSecretChat(secret_chat_id, cb, cmd)
   tdbot_function ({
     _ = "getSecretChat",
     secret_chat_id = secret_chat_id
   }, cb or dl_cb, cmd)
 end
 
-I.getSecretChat = getSecretChat
-
 -- Returns information about a chat by its identifier, offline request if current user is not a bot
 -- @chat_id Chat identifier
-local function getChat(chat_id, cb, cmd)
+function I.getChat(chat_id, cb, cmd)
   tdbot_function ({
     _ = "getChat",
     chat_id = chat_id
   }, cb or dl_cb, cmd)
 end
 
-I.getChat = getChat
-
 -- Returns information about a message
 -- @chat_id Identifier of the chat, message belongs to
 -- @message_id Identifier of the message to get
-local function getMessage(chat_id, message_id, cb, cmd)
+function I.getMessage(chat_id, message_id, cb, cmd)
   tdbot_function ({
     _ = "getMessage",
     chat_id = chat_id,
@@ -413,13 +374,11 @@ local function getMessage(chat_id, message_id, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.getMessage = getMessage
-
 -- Returns information about messages.
 -- If message is not found, returns null on the corresponding position of the result
 -- @chat_id Identifier of the chat, messages belongs to
 -- @message_ids Identifiers of the messages to get
-local function getMessages(chat_id, message_ids, cb, cmd)
+function I.getMessages(chat_id, message_ids, cb, cmd)
   tdbot_function ({
     _ = "getMessages",
     chat_id = chat_id,
@@ -427,24 +386,20 @@ local function getMessages(chat_id, message_ids, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.getMessages = getMessages
-
 -- Returns information about a file, offline request
 -- @file_id Identifier of the file to get
-local function getFile(file_id, cb, cmd)
+function I.getFile(file_id, cb, cmd)
   tdbot_function ({
     _ = "getFile",
     file_id = file_id
   }, cb or dl_cb, cmd)
 end
 
-I.getFile = getFile
-
 -- Returns information about a file by its persistent id, offline request.
 -- May be used to register a URL as a file for further uploading or sending as message.
 -- @persistent_file_id Persistent identifier of the file to get
 -- @file_type File type, if known, file_type = None|Animation|Audio|Document|Photo|ProfilePhoto|Secret|Sticker|Thumb|Unknown|Video|VideoNote|Voice|Wallpaper|SecretThumb
-local function getFilePersistent(persistent_file_id, file_type, cb, cmd)
+function I.getFilePersistent(persistent_file_id, file_type, cb, cmd)
   tdbot_function ({
     _ = "getFilePersistent",
     persistent_file_id = persistent_file_id,
@@ -452,14 +407,12 @@ local function getFilePersistent(persistent_file_id, file_type, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.getFilePersistent = getFilePersistent
-
 -- Returns list of chats in the right order, chats are sorted by (order, chat_id) in decreasing order.
 -- For example, to get list of chats from the beginning, the offsetorder should be equal 2^63 - 1
 -- @offsetorder Chat order to return chats from
 -- @offset_chat_id Chat identifier to return chats from
 -- @limit Maximum number of chats to be returned. There may be less than limit chats returned even the end of the list is not reached
-local function getChats(offsetorder, offset_chat_id, limit, cb, cmd)
+function I.getChats(offsetorder, offset_chat_id, limit, cb, cmd)
   if not limit or limit > 20 then
     limit = 20
   end
@@ -472,20 +425,16 @@ local function getChats(offsetorder, offset_chat_id, limit, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.getChats = getChats
-
 -- Searches public chat by its username.
 -- Currently only private and channel chats can be public.
 -- Returns chat if found, otherwise some error is returned
 -- @username Username to be resolved
-local function searchPublicChat(username, cb, cmd)
+function I.searchPublicChat(username, cb, cmd)
   tdbot_function ({
     _ = "searchPublicChat",
     username = username
   }, cb or dl_cb, cmd)
 end
-
-I.searchPublicChat = searchPublicChat
 
 -- Searches public chats by prefix of their username.
 -- Currently only private and channel (including supergroup) chats can be public.
@@ -493,20 +442,18 @@ I.searchPublicChat = searchPublicChat
 -- Returns nothing if length of the searched username prefix is less than 5.
 -- Excludes private chats with contacts from the results
 -- @usernameprefix Prefix of the username to search
-local function searchPublicChats(usernameprefix, cb, cmd)
+function I.searchPublicChats(usernameprefix, cb, cmd)
   tdbot_function ({
     _ = "searchPublicChats",
     usernameprefix  = usernameprefix
   }, cb or dl_cb, cmd)
 end
 
-I.searchPublicChats = searchPublicChats
-
 -- Searches for specified query in the title and username of known chats, offline request.
 -- Returns chats in the order of them in the chat list
 -- @query Query to search for, if query is empty, returns up to 20 recently found chats
 -- @limit Maximum number of chats to be returned
-local function searchChats(query, limit, cb, cmd)
+function I.searchChats(query, limit, cb, cmd)
   if not limit or limit > 20 then
     limit = 20
   end
@@ -518,13 +465,11 @@ local function searchChats(query, limit, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.searchChats = searchChats
-
 -- Returns a list of frequently used chats.
 -- Supported only if chat info database is enabled.
 -- @category Category of chats to return
 -- @limit Maximum number of chats to be returned, at most 30
-local function getTopChats(category, limit, cb, cmd)
+function I.getTopChats(category, limit, cb, cmd)
   if not limit or limit > 30 then
     limit = 30
   end
@@ -536,13 +481,11 @@ local function getTopChats(category, limit, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.getTopChats = getTopChats
-
 -- Delete a chat from a list of frequently used chats.
 -- Supported only if chat info database is enabled.
 -- @category Category = Users|Bots|Groups|Channels|InlineBots|Calls
 -- @chat_id Chat identifier
-local function deleteTopChat(category, chat_id, cb, cmd)
+function I.deleteTopChat(category, chat_id, cb, cmd)
   tdbot_function ({
     _ = "deleteTopChat",
     category = "topChatCategory"..category or Channels,
@@ -550,47 +493,39 @@ local function deleteTopChat(category, chat_id, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.deleteTopChat = deleteTopChat
-
 -- Adds chat to the list of recently found chats.
 -- The chat is added to the beginning of the list.
 -- If the chat is already in the list, at first it is removed from the list
 -- @chat_id Identifier of the chat to add
-local function addRecentlyFoundChat(chat_id, cb, cmd)
+function I.addRecentlyFoundChat(chat_id, cb, cmd)
   tdbot_function ({
     _ = "addRecentlyFoundChat",
     chat_id = chat_id
   }, cb or dl_cb, cmd)
 end
 
-I.addRecentlyFoundChat = addRecentlyFoundChat
-
 -- Deletes chat from the list of recently found chats
 -- @chat_id Identifier of the chat to delete
-local function deleteRecentlyFoundChat(chat_id, cb, cmd)
+function I.deleteRecentlyFoundChat(chat_id, cb, cmd)
   tdbot_function ({
     _ = "deleteRecentlyFoundChat",
     chat_id = chat_id
   }, cb or dl_cb, cmd)
 end
 
-I.deleteRecentlyFoundChat = deleteRecentlyFoundChat
-
 -- Clears list of recently found chats
-local function deleteRecentlyFoundChats(dl_cb, cmd)
+function I.deleteRecentlyFoundChats(dl_cb, cmd)
   tdbot_function ({
     _ = "deleteRecentlyFoundChats",
   }, cb or dl_cb, cmd)
 end
-
-I.deleteRecentlyFoundChats = deleteRecentlyFoundChats
 
 -- Returns list of common chats with an other given user.
 -- Chats are sorted by their type and creation date
 -- @user_id User identifier
 -- @offset_chat_id Chat identifier to return chats from, use 0 for the first request
 -- @limit Maximum number of chats to be returned, up to 100
-local function getCommonChats(user_id, offset_chat_id, limit, cb, cmd)
+function I.getCommonChats(user_id, offset_chat_id, limit, cb, cmd)
   if not limit or limit > 100 then
     limit = 100
   end
@@ -603,8 +538,6 @@ local function getCommonChats(user_id, offset_chat_id, limit, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.getCommonChats = getCommonChats
-
 -- Returns messages in a chat.
 -- Automatically calls openChat.
 -- Returns result in reverse chronological order, i.e. in order of decreasing message.message_id.
@@ -616,7 +549,7 @@ I.getCommonChats = getCommonChats
 -- If offset is negative, limit must be greater than -offset.
 -- There may be less than limit messages returned even the end of the history is not reached
 -- @only_local Return only locally available messages without sending network requests
-local function getChatHistory(chat_id, from_message_id, offset, limit, only_local, cb, cmd)
+function I.getChatHistory(chat_id, from_message_id, offset, limit, only_local, cb, cmd)
   if not limit or limit > 100 then
     limit = 100
   end
@@ -631,21 +564,17 @@ local function getChatHistory(chat_id, from_message_id, offset, limit, only_loca
   }, cb or dl_cb, cmd)
 end
 
-I.getChatHistory = getChatHistory
-
 -- Deletes all messages in the chat.
 -- Can't be used for channel chats
 -- @chat_id Chat identifier
 -- @remove_from_chat_list Pass true, if chat should be removed from the chat list
-local function deleteChatHistory(chat_id, remove_from_chat_list, cb, cmd)
+function I.deleteChatHistory(chat_id, remove_from_chat_list, cb, cmd)
   tdbot_function ({
     _ = "deleteChatHistory",
     chat_id = chat_id,
     remove_from_chat_list = remove_from_chat_list
   }, cb or dl_cb, cmd)
 end
-
-I.deleteChatHistory = deleteChatHistory
 
 -- Searches for messages with given words in the chat.
 -- Returns result in reverse chronological order, i. e. in order of decreasing message_id.
@@ -659,7 +588,7 @@ I.deleteChatHistory = deleteChatHistory
 -- There may be less than limit messages returned even the end of the history is not reached
 -- @filter Filter for content of searched messages
 -- filter = Empty|Animation|Audio|Document|Photo|Video|Voice|PhotoAndVideo|Url|ChatPhoto
-local function searchChatMessages(chat_id, query, from_message_id, limit, filter, cb, cmd)
+function I.searchChatMessages(chat_id, query, from_message_id, limit, filter, cb, cmd)
   if not limit or limit > 100 then
     limit = 100
   end
@@ -676,15 +605,13 @@ local function searchChatMessages(chat_id, query, from_message_id, limit, filter
   }, cb or dl_cb, cmd)
 end
 
-I.searchChatMessages = searchChatMessages
-
 -- Searches for messages in all chats except secret chats. Returns result in reverse chronological order, i. e. in order of decreasing (date, chat_id, message_id)
 -- @query Query to search for
 -- @offsetdate Date of the message to search from, you can use 0 or any date in the future to get results from the beginning
 -- @offset_chat_id Chat identifier of the last found message or 0 for the first request
 -- @offset_message_id Message identifier of the last found message or 0 for the first request
 -- @limit Maximum number of messages to be returned, at most 100
-local function searchMessages(query, offset_date, offset_chat_id, offset_message_id, limit, cb, cmd)
+function I.searchMessages(query, offset_date, offset_chat_id, offset_message_id, limit, cb, cmd)
   if not limit or limit > 100 then
     limit = 100
   end
@@ -699,8 +626,6 @@ local function searchMessages(query, offset_date, offset_chat_id, offset_message
   }, cb or dl_cb, cmd)
 end
 
-I.searchMessages = searchMessages
-
 -- Searches for messages in secret chats.
 -- Returns result in reverse chronological order
 -- @chat_id Identifier of a chat to search in. Specify 0 to search in all secret chats
@@ -708,7 +633,7 @@ I.searchMessages = searchMessages
 -- @from_search_id Identifier from the result of previous request, use 0 to get results from the beginning
 -- @limit Maximum number of messages to be returned, can't be greater than 100
 -- @filter Filter for content of searched messages
-local function searchSecretMessages(chat_id, query, from_search_id, limit, filter, cb, cmd)
+function I.searchSecretMessages(chat_id, query, from_search_id, limit, filter, cb, cmd)
   if not limit or limit > 100 then
     limit = 100
   end
@@ -725,14 +650,12 @@ local function searchSecretMessages(chat_id, query, from_search_id, limit, filte
   }, cb or dl_cb, cmd)
 end
 
-I.searchSecretMessages = searchSecretMessages
-
 -- Searches for call messages. Returns result in reverse chronological order, i. e. in order of decreasing message_id
 -- @from_message_id Identifier of the message from which to search, you can use 0 to get results from beginning
 -- @limit Maximum number of messages to be returned, can't be greater than 100.
 -- There may be less than limit messages returned even the end of the history is not reached filter
 -- @only_missed If true, return only messages with missed calls
-local function searchCallMessages(from_message_id, limit, only_missed, cb, cmd)
+function I.searchCallMessages(from_message_id, limit, only_missed, cb, cmd)
   if not limit or limit > 100 then
     limit = 100
   end
@@ -745,20 +668,16 @@ local function searchCallMessages(from_message_id, limit, only_missed, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.searchCallMessages = searchCallMessages
-
 -- Returns public HTTPS link to a message. Available only for messages in public channels
 -- @chat_id Identifier of the chat, message belongs to
 -- @message_id Identifier of the message
-local function getPublicMessageLink(chat_id, message_id, cb, cmd)
+function I.getPublicMessageLink(chat_id, message_id, cb, cmd)
   tdbot_function ({
     _ = "getPublicMessageLink",
     chat_id = chat_id,
     message_id = message_id
   }, cb or dl_cb, cmd)
 end
-
-I.getPublicMessageLink = getPublicMessageLink
 
 -- Invites bot to a chat (if it is not in the chat) and send /start to it.
 -- Bot can't be invited to a private chat other than chat with the bot.
@@ -768,7 +687,7 @@ I.getPublicMessageLink = getPublicMessageLink
 -- @chat_id Identifier of the chat
 -- @parameter Hidden parameter sent to bot for deep linking (https://api.telegram.org/bots#deep-linking)
 -- parameter=start|startgroup or custom as defined by bot creator
-local function sendBotStartMessage(bot_user_id, chat_id, parameter, cb, cmd)
+function I.sendBotStartMessage(bot_user_id, chat_id, parameter, cb, cmd)
   tdbot_function ({
     _ = "sendBotStartMessage",
     bot_user_id = bot_user_id,
@@ -776,8 +695,6 @@ local function sendBotStartMessage(bot_user_id, chat_id, parameter, cb, cmd)
     parameter = parameter or "start"
   }, cb or dl_cb, cmd)
 end
-
-I.sendBotStartMessage = sendBotStartMessage
 
 -- Sends result of the inline query as a message.
 -- Returns sent message.
@@ -788,7 +705,7 @@ I.sendBotStartMessage = sendBotStartMessage
 -- @from_background Pass true, if the message is sent from background
 -- @queryid Identifier of the inline query
 -- @result_id Identifier of the inline result
-local function sendInlineQueryResultMessage(chat_id, reply_to_message_id, disable_notification, from_background, query_id, result_id, cb, cmd)
+function I.sendInlineQueryResultMessage(chat_id, reply_to_message_id, disable_notification, from_background, query_id, result_id, cb, cmd)
   tdbot_function ({
     _ = "sendInlineQueryResultMessage",
     chat_id = chat_id,
@@ -800,8 +717,6 @@ local function sendInlineQueryResultMessage(chat_id, reply_to_message_id, disabl
   }, cb or dl_cb, cmd)
 end
 
-I.sendInlineQueryResultMessage = sendInlineQueryResultMessage
-
 -- Forwards previously sent messages.
 -- Returns forwarded messages in the same order as message identifiers passed in message_ids.
 -- If message can't be forwarded, null will be returned instead of the message.
@@ -810,7 +725,7 @@ I.sendInlineQueryResultMessage = sendInlineQueryResultMessage
 -- @message_ids Identifiers of messages to forward
 -- @disable_notification Pass true, to disable notification about the message, doesn't works if messages are forwarded to secret chat
 -- @from_background Pass true, if the message is sent from background
-local function forwardMessages(chat_id, from_chat_id, message_ids, disable_notification, cb, cmd)
+function I.forwardMessages(chat_id, from_chat_id, message_ids, disable_notification, cb, cmd)
   tdbot_function ({
     _ = "forwardMessages",
     chat_id = chat_id,
@@ -821,12 +736,10 @@ local function forwardMessages(chat_id, from_chat_id, message_ids, disable_notif
   }, cb or dl_cb, cmd)
 end
 
-I.forwardMessages = forwardMessages
-
 -- Changes current ttl setting in a secret chat and sends corresponding message
 -- @chat_id Chat identifier
 -- @ttl New value of ttl in seconds
-local function sendChatSetTtlMessage(chat_id, ttl, cb, cmd)
+function I.sendChatSetTtlMessage(chat_id, ttl, cb, cmd)
   tdbot_function ({
     _ = "sendChatSetTtlMessage",
     chat_id = chat_id,
@@ -834,25 +747,21 @@ local function sendChatSetTtlMessage(chat_id, ttl, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.sendChatSetTtlMessage = sendChatSetTtlMessage
-
 -- Sends notification about screenshot taken in a chat
 -- Works only in private and secret chats
 -- @chat_id Chat identifier
-local function sendChatScreenshotTakenNotification(chat_id, cb, cmd)
+function I.sendChatScreenshotTakenNotification(chat_id, cb, cmd)
   tdbot_function ({
     _ = "sendChatScreenshotTakenNotification",
     chat_id = chat_id
   }, cb or dl_cb, cmd)
 end
 
-I.sendChatScreenshotTakenNotification = sendChatScreenshotTakenNotification
-
 -- Deletes messages.
 -- @chat_id Chat identifier
 -- @message_ids Identifiers of messages to delete
 -- @revoke Pass true to try to delete sent messages for all chat members (may fail if messages are too old). Is always true for Channels and SecretChats
-local function deleteMessages(chat_id, message_ids, revoke, cb, cmd)
+function I.deleteMessages(chat_id, message_ids, revoke, cb, cmd)
   tdbot_function ({
     _ = "deleteMessages",
     chat_id = chat_id,
@@ -861,21 +770,17 @@ local function deleteMessages(chat_id, message_ids, revoke, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.deleteMessages = deleteMessages
-
 -- Deletes all messages in the chat sent by the specified user.
 -- Works only in supergroup channel chats, needs can_delete_messages administrator privileges
 -- @chat_id Chat identifier
 -- @user_id User identifier
-local function deleteMessagesFromUser(chat_id, user_id, cb, cmd)
+function I.deleteMessagesFromUser(chat_id, user_id, cb, cmd)
   tdbot_function ({
     _ = "deleteMessagesFromUser",
     chat_id = chat_id,
     user_id = user_id
   }, cb or dl_cb, cmd)
 end
-
-I.deleteMessagesFromUser = deleteMessagesFromUser
 
 -- Edits text of text or game message.
 -- Non-bots can edit message in a limited period of time.
@@ -884,7 +789,7 @@ I.deleteMessagesFromUser = deleteMessagesFromUser
 -- @message_id Identifier of the message
 -- @reply_markup Bots only. New message reply markup
 -- @input_message_content New text content of the message. Should be of type InputMessageText
-local function editMessageText(chat_id, message_id, reply_markup, text, disable_web_page_preview, parse_mode, cb, cmd)
+function I.editMessageText(chat_id, message_id, reply_markup, text, disable_web_page_preview, parse_mode, cb, cmd)
   local TextParseMode = getParseMode(parse_mode)
 
   tdbot_function ({
@@ -903,8 +808,6 @@ local function editMessageText(chat_id, message_id, reply_markup, text, disable_
   }, cb or dl_cb, cmd)
 end
 
-I.editMessageText = editMessageText
-
 -- Edits message content caption.
 -- Non-bots can edit message in a limited period of time.
 -- Returns edited message after edit is complete server side
@@ -912,7 +815,7 @@ I.editMessageText = editMessageText
 -- @message_id Identifier of the message
 -- @reply_markup Bots only. New message reply markup
 -- @caption New message content caption, 0-200 characters
-local function editMessageCaption(chat_id, message_id, reply_markup, caption, cb, cmd)
+function I.editMessageCaption(chat_id, message_id, reply_markup, caption, cb, cmd)
   tdbot_function ({
     _ = "editMessageCaption",
     chat_id = chat_id,
@@ -922,15 +825,13 @@ local function editMessageCaption(chat_id, message_id, reply_markup, caption, cb
   }, cb or dl_cb, cmd)
 end
 
-I.editMessageCaption = editMessageCaption
-
 -- Bots only.
 -- Edits message reply markup.
 -- Returns edited message after edit is complete server side
 -- @chat_id Chat the message belongs to
 -- @message_id Identifier of the message
 -- @reply_markup New message reply markup
-local function editMessageReplyMarkup(inline_message_id, reply_markup, caption, cb, cmd)
+function I.editMessageReplyMarkup(inline_message_id, reply_markup, caption, cb, cmd)
   tdbot_function ({
     _ = "editInlineMessageCaption",
     inline_message_id = inline_message_id,
@@ -939,14 +840,12 @@ local function editMessageReplyMarkup(inline_message_id, reply_markup, caption, 
   }, cb or dl_cb, cmd)
 end
 
-I.editMessageReplyMarkup = editMessageReplyMarkup
-
 -- Bots only.
 -- Edits text of an inline text or game message sent via bot
 -- @inline_message_id Inline message identifier
 -- @reply_markup New message reply markup
 -- @input_message_content New text content of the message. Should be of type InputMessageText
-local function editInlineMessageText(inline_message_id, reply_markup, text, disable_web_page_preview, cb, cmd)
+function I.editInlineMessageText(inline_message_id, reply_markup, text, disable_web_page_preview, cb, cmd)
   tdbot_function ({
     _ = "editInlineMessageText",
     inline_message_id = inline_message_id,
@@ -961,14 +860,12 @@ local function editInlineMessageText(inline_message_id, reply_markup, text, disa
   }, cb or dl_cb, cmd)
 end
 
-I.editInlineMessageText = editInlineMessageText
-
 -- Bots only.
 -- Edits caption of an inline message content sent via bot
 -- @inline_message_id Inline message identifier
 -- @reply_markup New message reply markup
 -- @caption New message content caption, 0-200 characters
-local function editInlineMessageCaption(inline_message_id, reply_markup, caption, cb, cmd)
+function I.editInlineMessageCaption(inline_message_id, reply_markup, caption, cb, cmd)
   tdbot_function ({
     _ = "editInlineMessageCaption",
     inline_message_id = inline_message_id,
@@ -977,13 +874,11 @@ local function editInlineMessageCaption(inline_message_id, reply_markup, caption
   }, cb or dl_cb, cmd)
 end
 
-I.editInlineMessageCaption = editInlineMessageCaption
-
 -- Bots only.
 -- Edits reply markup of an inline message sent via bot
 -- @inline_message_id Inline message identifier
 -- @reply_markup New message reply markup
-local function editInlineMessageReplyMarkup(inline_message_id, reply_markup, cb, cmd)
+function I.editInlineMessageReplyMarkup(inline_message_id, reply_markup, cb, cmd)
   tdbot_function ({
     _ = "editInlineMessageReplyMarkup",
     inline_message_id = inline_message_id,
@@ -991,33 +886,27 @@ local function editInlineMessageReplyMarkup(inline_message_id, reply_markup, cb,
   }, cb or dl_cb, cmd)
 end
 
-I.editInlineMessageReplyMarkup = editInlineMessageReplyMarkup
-
 -- Returns all mentions, hashtags, bot commands, URLs and emails contained in the text. Offline method.
 -- Can be called before authorization.
 -- Can be called synchronously
 -- @text Text to find entites in
-local function getTextEntities(text, cb, cmd)
+function I.getTextEntities(text, cb, cmd)
   tdbot_function ({
     _ = "getTextEntities",
     text = text
   }, cb or dl_cb, cmd)
 end
 
-I.getTextEntities = getTextEntities
-
 -- Returns file's mime type guessing only by its extension.
 -- Offline method. Can be called before authorization.
 -- Can be called synchronously
 --  @file_name Name of the file or path to the file
-local function getFileMimeType(file_name, cb, cmd)
+function I.getFileMimeType(file_name, cb, cmd)
   tdbot_function ({
     _ = "getFileMimeType",
     file_name = file_name
   }, cb or dl_cb, cmd)
 end
-
-I.getFileMimeType = getFileMimeType
 
 -- Sends inline query to a bot and returns its results.
 -- Returns error with code 502 if bot fails to answer the query before query timeout expires.
@@ -1029,7 +918,7 @@ I.getFileMimeType = getFileMimeType
 -- @longitude Longitude of location in degrees as defined by sender
 -- @query Text of the query
 -- @offset Offset of the first entry to return
-local function getInlineQueryResults(bot_user_id, chat_id, latitude, longitude, query, offset, cb, cmd)
+function I.getInlineQueryResults(bot_user_id, chat_id, latitude, longitude, query, offset, cb, cmd)
   tdbot_function ({
     _ = "getInlineQueryResults",
     bot_user_id = bot_user_id,
@@ -1044,8 +933,6 @@ local function getInlineQueryResults(bot_user_id, chat_id, latitude, longitude, 
   }, cb or dl_cb, cmd)
 end
 
-I.getInlineQueryResults = getInlineQueryResults
-
 -- Bots only.
 -- Sets result of the inline query
 -- @inline_queryid Identifier of the inline query
@@ -1055,7 +942,7 @@ I.getInlineQueryResults = getInlineQueryResults
 -- @next_offset Offset for the next inline query, pass empty string if there is no more results
 -- @switch_pm_text If non-empty, this text should be shown on the button, which opens private chat with the bot and sends bot start message with parameter switch_pm_parameter
 -- @switch_pm_parameter Parameter for the bot start message
-local function answerInlineQuery(inline_query_id, is_personal, results, cache_time, next_offset, switch_pm_text, switch_pm_parameter, cb, cmd)
+function I.answerInlineQuery(inline_query_id, is_personal, results, cache_time, next_offset, switch_pm_text, switch_pm_parameter, cb, cmd)
   tdbot_function ({
     _ = "answerInlineQuery",
     inline_query_id = inline_query_id,
@@ -1068,8 +955,6 @@ local function answerInlineQuery(inline_query_id, is_personal, results, cache_ti
   }, cb or dl_cb, cmd)
 end
 
-I.answerInlineQuery = answerInlineQuery
-
 -- Sends callback query to a bot and returns answer to it.
 -- Returns error with code 502 if bot fails to answer the query before query timeout expires.
 -- Unavailable for bots
@@ -1079,7 +964,7 @@ I.answerInlineQuery = answerInlineQuery
 -- @text Text of the answer
 -- @show_alert If true, an alert should be shown to the user instead of a toast
 -- @url URL to be open
-local function getCallbackQueryAnswer(chat_id, message_id, text, show_alert, url, cb, cmd)
+function I.getCallbackQueryAnswer(chat_id, message_id, text, show_alert, url, cb, cmd)
   tdbot_function ({
     _ = "getCallbackQueryAnswer",
     chat_id = chat_id,
@@ -1093,8 +978,6 @@ local function getCallbackQueryAnswer(chat_id, message_id, text, show_alert, url
   }, cb or dl_cb, cmd)
 end
 
-I.getCallbackQueryAnswer = getCallbackQueryAnswer
---[[
 -- Bots only.
 -- Sets result of a callback query
 -- @callback_queryid Identifier of the callback query
@@ -1102,7 +985,7 @@ I.getCallbackQueryAnswer = getCallbackQueryAnswer
 -- @show_alert If true, an alert should be shown to the user instead of a toast
 -- @url Url to be opened
 -- @cache_time Allowed time to cache result of the query in seconds
-local function answerCallbackQuery(callback_query_id, text, show_alert, url, cache_time, cb, cmd)
+function I.answerCallbackQuery(callback_query_id, text, show_alert, url, cache_time, cb, cmd)
   tdbot_function ({
     _ = "answerCallbackQuery",
     callback_query_id = callback_query_id,
@@ -1113,14 +996,11 @@ local function answerCallbackQuery(callback_query_id, text, show_alert, url, cac
   }, cb or dl_cb, cmd)
 end
 
-I.answerCallbackQuery = answerCallbackQuery
-
-
 -- Bots only.
 -- Sets result of a shipping query @shipping_queryid Identifier of the shipping query
 -- @shipping_options Available shipping options
 -- @error_message Error message, empty on success
-local function answerShippingQuery(shipping_query_id, shipping_options, error_message, cb, cmd)
+function I.answerShippingQuery(shipping_query_id, shipping_options, error_message, cb, cmd)
   tdbot_function ({
     _ = "answerShippingQuery",
     shipping_query_id = shipping_query_id,
@@ -1129,21 +1009,17 @@ local function answerShippingQuery(shipping_query_id, shipping_options, error_me
   }, cb or dl_cb, cmd)
 end
 
-I.answerShippingQuery = answerShippingQuery
-
 --Bots only.
 -- Sets result of a pre checkout query
 -- @pre_checkout_queryid Identifier of the pre-checkout query
 -- @error_message Error message, empty on success
-local function answerPreCheckoutQuery(pre_checkout_queryid, error_message, cb, cmd)
+function I.answerPreCheckoutQuery(pre_checkout_queryid, error_message, cb, cmd)
   tdbot_function ({
     _ = "answerPreCheckoutQuery",
     pre_checkout_queryid = pre_checkout_queryid,
     error_message = error_message
   }, cb or dl_cb, cmd)
 end
-
-I.answerPreCheckoutQuery = answerPreCheckoutQuery
 
 -- Bots only.
 -- Updates game score of the specified user in the game
@@ -1153,7 +1029,7 @@ I.answerPreCheckoutQuery = answerPreCheckoutQuery
 -- @user_id User identifier
 -- @score New score
 -- @force Pass True to update the score even if it decreases. If score is 0, user will be deleted from the high scores table
-local function setGameScore(chat_id, message_id, edit_message, user_id, score, force, cb, cmd)
+function I.setGameScore(chat_id, message_id, edit_message, user_id, score, force, cb, cmd)
   tdbot_function ({
     _ = "setGameScore",
     chat_id = chat_id,
@@ -1165,8 +1041,6 @@ local function setGameScore(chat_id, message_id, edit_message, user_id, score, f
   }, cb or dl_cb, cmd)
 end
 
-I.setGameScore = setGameScore
-
 -- Bots only.
 -- Updates game score of the specified user in the game
 -- @inline_message_id Inline message identifier
@@ -1174,7 +1048,7 @@ I.setGameScore = setGameScore
 -- @user_id User identifier
 -- @score New score
 -- @force Pass True to update the score even if it decreases. If score is 0, user will be deleted from the high scores table
-local function setInlineGameScore(inline_message_id, edit_message, user_id, score, force, cb, cmd)
+function I.setInlineGameScore(inline_message_id, edit_message, user_id, score, force, cb, cmd)
   tdbot_function ({
     _ = "setInlineGameScore",
     inline_message_id = inline_message_id,
@@ -1185,14 +1059,12 @@ local function setInlineGameScore(inline_message_id, edit_message, user_id, scor
   }, cb or dl_cb, cmd)
 end
 
-I.setInlineGameScore = setInlineGameScore
-
 -- Bots only.
 -- Returns game high scores and some part of the score table around of the specified user in the game
 -- @chat_id Chat a message with the game belongs to
 -- @message_id Identifier of the message
 -- @user_id User identifie
-local function getGameHighScores(chat_id, message_id, user_id, cb, cmd)
+function I.getGameHighScores(chat_id, message_id, user_id, cb, cmd)
   tdbot_function ({
     _ = "getGameHighScores",
     chat_id = chat_id,
@@ -1201,13 +1073,11 @@ local function getGameHighScores(chat_id, message_id, user_id, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.getGameHighScores = getGameHighScores
-
 -- Bots only.
 -- Returns game high scores and some part of the score table around of the specified user in the game
 -- @inline_message_id Inline message identifier
 -- @user_id User identifier
-local function getInlineGameHighScores(inline_message_id, user_id, cb, cmd)
+function I.getInlineGameHighScores(inline_message_id, user_id, cb, cmd)
   tdbot_function ({
     _ = "getInlineGameHighScores",
     inline_message_id = inline_message_id,
@@ -1215,14 +1085,12 @@ local function getInlineGameHighScores(inline_message_id, user_id, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.getInlineGameHighScores = getInlineGameHighScores
-
 -- Deletes default reply markup from chat.
 -- This method needs to be called after one-time keyboard or ForceReply reply markup has been used.
 -- UpdateChatReplyMarkup will be send if reply markup will be changed
 -- @chat_id Chat identifier
 -- @message_id Message identifier of used keyboard
-local function deleteChatReplyMarkup(chat_id, message_id, cb, cmd)
+function I.deleteChatReplyMarkup(chat_id, message_id, cb, cmd)
   tdbot_function ({
     _ = "deleteChatReplyMarkup",
     chat_id = chat_id,
@@ -1230,13 +1098,11 @@ local function deleteChatReplyMarkup(chat_id, message_id, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.deleteChatReplyMarkup = deleteChatReplyMarkup
-]]
 -- Sends notification about user activity in a chat
 -- @chat_id Chat identifier
 -- @action Action description
 -- action = Typing|Cancel|RecordingVideo|UploadingVideo|RecordingVoice|UploadingVoice|UploadingPhoto|UploadingDocument|ChoosingLocation|ChoosingContact|StartPlayingGame|RecordingVideoNote|UploadingVideoNote
-local function sendChatAction(chat_id, action, progress, cb, cmd)
+function I.sendChatAction(chat_id, action, progress, cb, cmd)
   tdbot_function ({
     _ = "sendChatAction",
     chat_id = chat_id,
@@ -1247,37 +1113,31 @@ local function sendChatAction(chat_id, action, progress, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.sendChatAction = sendChatAction
-
 -- Chat is opened by the user.
 -- Many useful activities depends on chat being opened or closed. For example, in channels all updates are received only for opened chats
 -- @chat_id Chat identifier
-  local function openChat(chat_id, cb, cmd)
+  function I.openChat(chat_id, cb, cmd)
   tdbot_function ({
     _ = "openChat",
     chat_id = chat_id
   }, cb or dl_cb, cmd)
 end
 
-I.openChat = openChat
-
 -- Chat is closed by the user.
 -- Many useful activities depends on chat being opened or closed.
 -- @chat_id Chat identifier
-local function closeChat(chat_id, cb, cmd)
+function I.closeChat(chat_id, cb, cmd)
   tdbot_function ({
     _ = "closeChat",
     chat_id = chat_id
   }, cb or dl_cb, cmd)
 end
 
-I.closeChat = closeChat
-
 -- Messages are viewed by the user.
 -- Many useful activities depends on message being viewed. For example, marking messages as read, incrementing of view counter, updating of view counter, removing of deleted messages in channels
 -- @chat_id Chat identifier
 -- @message_ids Identifiers of viewed messages
-local function viewMessages(chat_id, message_ids, cb, cmd)
+function I.viewMessages(chat_id, message_ids, cb, cmd)
   tdbot_function ({
     _ = "viewMessages",
     chat_id = chat_id,
@@ -1285,13 +1145,11 @@ local function viewMessages(chat_id, message_ids, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.viewMessages = viewMessages
-
 -- Message content is opened, for example the user has opened a photo, a video, a document, a location or a venue or have listened to an audio or a voice message.
 -- You will receive updateOpenMessageContent if something has changed
 -- @chat_id Chat identifier of the message
 -- @message_id Identifier of the message with opened content
-local function openMessageContent(chat_id, message_id, cb, cmd)
+function I.openMessageContent(chat_id, message_id, cb, cmd)
   tdbot_function ({
     _ = "openMessageContent",
     chat_id = chat_id,
@@ -1299,56 +1157,46 @@ local function openMessageContent(chat_id, message_id, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.openMessageContent = openMessageContent
-
 -- Returns existing chat corresponding to the given user
 -- @user_id User identifier
-local function createPrivateChat(user_id, cb, cmd)
+function I.createPrivateChat(user_id, cb, cmd)
   tdbot_function ({
     _ = "createPrivateChat",
     user_id = user_id
   }, cb or dl_cb, cmd)
 end
 
-I.createPrivateChat = createPrivateChat
-
 -- Returns existing chat corresponding to the known group
 -- @group_id Group identifier
-local function createGroupChat(group_id, cb, cmd)
+function I.createGroupChat(group_id, cb, cmd)
   tdbot_function ({
     _ = "createGroupChat",
     group_id = getChatId(group_id)._
   }, cb or dl_cb, cmd)
 end
 
-I.createGroupChat = createGroupChat
-
 -- Returns existing chat corresponding to the known channel
 -- @channel_id Channel identifier
-local function createChannelChat(channel_id, cb, cmd)
+function I.createChannelChat(channel_id, cb, cmd)
   tdbot_function ({
     _ = "createChannelChat",
     channel_id = getChatId(channel_id)._
   }, cb or dl_cb, cmd)
 end
 
-I.createChannelChat = createChannelChat
-
 -- Returns existing chat corresponding to the known secret chat
 -- @secret_chat_id SecretChat identifier
-local function createSecretChat(secret_chat_id, cb, cmd)
+function I.createSecretChat(secret_chat_id, cb, cmd)
   tdbot_function ({
     _ = "createSecretChat",
     secret_chat_id = secret_chat_id
   }, cb or dl_cb, cmd)
 end
 
-I.createSecretChat = createSecretChat
-
 -- Creates new group chat and send corresponding messageGroupChatCreate, returns created chat
 -- @user_ids Identifiers of users to add to the group
 -- @title Title of new group chat, 1-255 characters
-local function createNewGroupChat(user_ids, title, cb, cmd)
+function I.createNewGroupChat(user_ids, title, cb, cmd)
   tdbot_function ({
     _ = "createNewGroupChat",
     user_ids = user_ids, -- vector<int>
@@ -1356,13 +1204,11 @@ local function createNewGroupChat(user_ids, title, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.createNewGroupChat = createNewGroupChat
-
 -- Creates new channel chat and send corresponding messageChannelChatCreate, returns created chat
 -- @title Title of new channel chat, 0-255 characters
 -- @is_supergroup True, if supergroup chat should be created
 -- @description Information about the channel, 0-255 characters
-local function createNewChannelChat(title, is_supergroup, description, cb, cmd)
+function I.createNewChannelChat(title, is_supergroup, description, cb, cmd)
   tdbot_function ({
     _ = "createNewChannelChat",
     title = title,
@@ -1371,29 +1217,23 @@ local function createNewChannelChat(title, is_supergroup, description, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.createNewChannelChat = createNewChannelChat
-
 -- Creates new secret chat, returns created chat
 -- @user_id Identifier of a user to create secret chat with
-local function createNewSecretChat(user_id, cb, cmd)
+function I.createNewSecretChat(user_id, cb, cmd)
   tdbot_function ({
     _ = "createNewSecretChat",
     user_id = user_id
   }, cb or dl_cb, cmd)
 end
 
-I.createNewSecretChat = createNewSecretChat
-
 -- Creates new channel supergroup chat from existing group chat and send corresponding messageChatMigrateTo and messageChatMigrateFrom. Deactivates group
 -- @chat_id Group chat identifier
-local function migrateGroupChatToChannelChat(chat_id, cb, cmd)
+function I.migrateGroupChatToChannelChat(chat_id, cb, cmd)
   tdbot_function ({
     _ = "migrateGroupChatToChannelChat",
     chat_id = chat_id
   }, cb or dl_cb, cmd)
 end
-
-I.migrateGroupChatToChannelChat = migrateGroupChatToChannelChat
 
 -- Changes chat title.
 -- Works only for group and channel chats.
@@ -1401,7 +1241,7 @@ I.migrateGroupChatToChannelChat = migrateGroupChatToChannelChat
 -- Title will not change before request to the server completes
 -- @chat_id Chat identifier
 -- @title New title of the chat, 1-255 characters
-local function changeChatTitle(chat_id, title, cb, cmd)
+function I.changeChatTitle(chat_id, title, cb, cmd)
   tdbot_function ({
     _ = "changeChatTitle",
     chat_id = chat_id,
@@ -1409,15 +1249,13 @@ local function changeChatTitle(chat_id, title, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.changeChatTitle = changeChatTitle
-
 -- Changes chat photo.
 --  Works only for group and channel chats.
 -- Requires administrator rights in groups and appropriate administrator right in channels.
 -- Photo will not change before request to the server completes
 -- @chat_id Chat identifier
 -- @photo New chat photo. You can use zero InputFileId to delete chat photo. Files accessible only by HTTP URL are not acceptable
-local function changeChatPhoto(chat_id, photo, cb, cmd)
+function I.changeChatPhoto(chat_id, photo, cb, cmd)
   tdbot_function ({
     _ = "changeChatPhoto",
     chat_id = chat_id,
@@ -1425,12 +1263,10 @@ local function changeChatPhoto(chat_id, photo, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.changeChatPhoto = changeChatPhoto
-
 -- Changes chat draft message
 -- @chat_id Chat identifier
 -- @draft_message New draft message, nullable
-local function changeChatDraftMessage(chat_id, reply_to_message_id, text, disable_web_page_preview, clear_draft, parse_mode, cb, cmd)
+function I.changeChatDraftMessage(chat_id, reply_to_message_id, text, disable_web_page_preview, clear_draft, parse_mode, cb, cmd)
   local TextParseMode = getParseMode(parse_mode)
 
   tdbot_function ({
@@ -1451,13 +1287,11 @@ local function changeChatDraftMessage(chat_id, reply_to_message_id, text, disabl
   }, cb or dl_cb, cmd)
 end
 
-I.changeChatDraftMessage = changeChatDraftMessage
-
 -- description Changes chat pinned state.
 -- You can pin up to getOption("pinned_chat_count_max") non-secret chats and the same number of secret chats
 -- @chat_id Chat identifier
 -- @is_pinned New value of is_pinned
-local function toggleChatIsPinned(chat_id, is_pinned, cb, cmd)
+function I.toggleChatIsPinned(chat_id, is_pinned, cb, cmd)
   tdbot_function ({
     _ = "toggleChatIsPinned",
     chat_id = chat_id,
@@ -1465,20 +1299,16 @@ local function toggleChatIsPinned(chat_id, is_pinned, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.toggleChatIsPinned = toggleChatIsPinned
-
 -- Changes client data associated with a chat
 -- @chat_id Chat identifier
 -- @client_data New value of client_data
-local function setChatClientData(chat_id, client_data, cb, cmd)
+function I.setChatClientData(chat_id, client_data, cb, cmd)
   tdbot_function ({
     _ = "setChatClientData",
     chat_id = chat_id,
     client_data = client_data,
   }, cb or dl_cb, cmd)
 end
-
-I.setChatClientData = setChatClientData
 
 -- Adds new member to chat.
 -- Members can't be added to private or secret chats.
@@ -1487,7 +1317,7 @@ I.setChatClientData = setChatClientData
 -- @chat_id Chat identifier
 -- @user_id Identifier of the user to add
 -- @forward_limit Number of previous messages from chat to forward to new member, ignored for channel chats
-local function addChatMember(chat_id, user_id, forward_limit, cb, cmd)
+function I.addChatMember(chat_id, user_id, forward_limit, cb, cmd)
   tdbot_function ({
     _ = "addChatMember",
     chat_id = chat_id,
@@ -1496,8 +1326,6 @@ local function addChatMember(chat_id, user_id, forward_limit, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.addChatMember = addChatMember
-
 -- Adds many new members to the chat.
 -- Currently, available only for channels.
 -- Can't be used to join the channel.
@@ -1505,15 +1333,13 @@ I.addChatMember = addChatMember
 -- Member will not be added if application is killed before it can send request to the server
 -- @chat_id Chat identifier
 -- @user_ids Identifiers of the users to add
-local function addChatMembers(chat_id, user_ids, cb, cmd)
+function I.addChatMembers(chat_id, user_ids, cb, cmd)
   tdbot_function ({
     _ = "addChatMembers",
     chat_id = chat_id,
     user_ids = user_ids -- vector<int>
   }, cb or dl_cb, cmd)
 end
-
-I.addChatMembers = addChatMembers
 
 -- Changes status of the chat member, need appropriate privileges.
 -- This function is currently  not suitable for adding new members to the chat, use addChatMember instead.
@@ -1539,7 +1365,7 @@ I.addChatMembers = addChatMembers
 -- @can_send_other_messages True, if the user can send animations, games, stickers and use inline bots, implies can_send_media_messages
 -- @can_add_web_page_previews True, if user may add web page preview to his messages, implies can_send_messages
 
-local function changeChatMemberStatus(chat_id, user_id, status, a, b, c, d, e, f, g, h, i, cb, cmd)
+function I.changeChatMemberStatus(chat_id, user_id, status, a, b, c, d, e, f, g, h, i, cb, cmd)
     if status and status == "Administrator" then
         s = {
             _ = "chatMemberStatusAdministrator",
@@ -1576,12 +1402,10 @@ local function changeChatMemberStatus(chat_id, user_id, status, a, b, c, d, e, f
   }, cb or dl_cb, cmd)
 end
 
-I.changeChatMemberStatus = changeChatMemberStatus
-
 -- Returns information about one participant of the chat
 -- @chat_id Chat identifier
 -- @user_id User identifier
-local function getChatMember(chat_id, user_id, cb, cmd)
+function I.getChatMember(chat_id, user_id, cb, cmd)
   tdbot_function ({
     _ = "getChatMember",
     chat_id = chat_id,
@@ -1589,14 +1413,12 @@ local function getChatMember(chat_id, user_id, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.getChatMember = getChatMember
-
 -- Searches for the specified query in the first name, last name and username among members of the specified chat.
 -- Requires administrator rights in broadcast channels
 -- @chat_id Chat identifier
 -- @query Query to search for
 -- @limit Maximum number of users to be returned
-local function searchChatMembers(chat_id, query, limit, cb, cmd)
+function I.searchChatMembers(chat_id, query, limit, cb, cmd)
   tdbot_function ({
     _ = "searchChatMembers",
     chat_id = chat_id,
@@ -1605,18 +1427,14 @@ local function searchChatMembers(chat_id, query, limit, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.searchChatMembers = searchChatMembers
-
 -- Changes list or order of pinned chats
 -- @chat_ids New list of pinned chats
-local function setPinnedChats(chat_ids, cb, cmd)
+function I.setPinnedChats(chat_ids, cb, cmd)
   tdbot_function ({
     _ = "setPinnedChats",
     chat_ids = chat_ids --vector<int>
   }, cb or dl_cb, cmd)
 end
-
-I.setPinnedChats = setPinnedChats
 
 -- Asynchronously downloads file from cloud.
 -- Updates updateFileProgress will notify about download progress and successful download.
@@ -1624,7 +1442,7 @@ I.setPinnedChats = setPinnedChats
 -- @file_id Identifier of file to download
 -- @priority Priority of download, 1-32.
 -- The higher priority, the earlier file will be downloaded. If priorities of two files are equal then the last one for which downloadFile is called will be downloaded first
-local function downloadFile(file_id, priority, cb, cmd)
+function I.downloadFile(file_id, priority, cb, cmd)
   tdbot_function ({
     _ = "downloadFile",
     file_id = file_id,
@@ -1632,19 +1450,15 @@ local function downloadFile(file_id, priority, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.downloadFile = downloadFile
-
 -- Stops file downloading.
 -- If file is already downloaded, does nothing
 -- @file_id Identifier of file to cancel download
-local function cancelDownloadFile(file_id, cb, cmd)
+function I.cancelDownloadFile(file_id, cb, cmd)
   tdbot_function ({
     _ = "cancelDownloadFile",
     file_id = file_id
   }, cb or dl_cb, cmd)
 end
-
-I.cancelDownloadFile = cancelDownloadFile
 
 -- Asynchronously uploads file to the cloud without sending it in a message.
 -- Updates updateFile will notify about upload progress and successful upload.
@@ -1652,7 +1466,7 @@ I.cancelDownloadFile = cancelDownloadFile
 -- @file File to upload
 -- @file_type File type, file_type = None|Animation|Audio|Document|Photo|ProfilePhoto|Secret|Sticker|Thumb|Unknown|Video|VideoNote|Voice|Wallpaper|SecretThumb
 -- @priority Priority of upload, 1-32. The higher priority, the earlier file will be uploaded. If priorities of two files are equal then the first one for which uploadFile is called will be uploaded first
-local function uploadFile(file, file_type, priority, cb, cmd)
+function I.uploadFile(file, file_type, priority, cb, cmd)
   tdbot_function ({
     _ = "uploadFile",
     file = getInputFile(file),
@@ -1661,26 +1475,22 @@ local function uploadFile(file, file_type, priority, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.uploadFile = uploadFile
-
 -- Stops file uploading.
 -- Works only for files uploaded using uploadFile.
 -- For other files the behavior is undefined
 -- @file_id Identifier of file to cancel upload
-local function cancelUploadFile(file_id, cb, cmd)
+function I.cancelUploadFile(file_id, cb, cmd)
   tdbot_function ({
     _ = "cancelUploadFile",
     file_id = file_id
   }, cb or dl_cb, cmd)
 end
 
-I.cancelUploadFile = cancelUploadFile
-
 -- Next part of a file was generated
 -- @generation_id Identifier of the generation process
 -- @size Full size of file in bytes, 0 if unknown.
 -- @local_size Number of bytes already generated. Negative number means that generation has failed and should be terminated
-local function setFileGenerationProgress(generation_id, size, local_size, cb, cmd)
+function I.setFileGenerationProgress(generation_id, size, local_size, cb, cmd)
   tdbot_function ({
     _ = "setFileGenerationProgress",
     generation_id = generation_id,
@@ -1689,63 +1499,53 @@ local function setFileGenerationProgress(generation_id, size, local_size, cb, cm
   }, cb or dl_cb, cmd)
 end
 
-I.setFileGenerationProgress = setFileGenerationProgress
-
 -- Finishes file generation
 -- @generation_id Identifier of the generation process
-local function finishFileGeneration(generation_id, cb, cmd)
+function I.finishFileGeneration(generation_id, cb, cmd)
   tdbot_function ({
     _ = "finishFileGeneration",
     generation_id = generation_id
   }, cb or dl_cb, cmd)
 end
 
-I.finishFileGeneration = finishFileGeneration
-
 -- Generates new chat invite link, previously generated link is revoked.
 -- Available for group and channel chats.
 -- In groups can be called only by creator, in channels requires appropriate rights
 -- @chat_id Chat identifier
-local function exportChatInviteLink(chat_id, cb, cmd)
+function I.exportChatInviteLink(chat_id, cb, cmd)
   tdbot_function ({
     _ = "exportChatInviteLink",
     chat_id = chat_id
   }, cb or dl_cb, cmd)
 end
 
-I.exportChatInviteLink = exportChatInviteLink
-
 -- Checks chat invite link for validness and returns information about the corresponding chat
 -- @invite_link Invite link to check. Should begin with "https://t.me/joinchat/", "https://telegram.me/joinchat/" or "https://telegram.dog/joinchat/"
-local function checkChatInviteLink(link, cb, cmd)
+function I.checkChatInviteLink(link, cb, cmd)
   tdbot_function ({
     _ = "checkChatInviteLink",
     invite_link = link
   }, cb or dl_cb, cmd)
 end
 
-I.checkChatInviteLink = checkChatInviteLink
-
 -- Imports chat invite link, adds current user to a chat if possible.
 -- Member will not be added until chat state will be synchronized with the server.
 -- Member will not be added if application is killed before it can send request to the server
 -- @invite_link Invite link to import. Should begin with "https://t.me/joinchat/", "https://telegram.me/joinchat/" or "https://telegram.dog/joinchat/"
-local function importChatInviteLink(invite_link, cb, cmd)
+function I.importChatInviteLink(invite_link, cb, cmd)
   tdbot_function ({
     _ = "importChatInviteLink",
     invite_link = invite_link
   }, cb or dl_cb, cmd)
 end
 
-I.importChatInviteLink = importChatInviteLink
---[[
 -- Creates new call @user_id Identifier of user to call
 -- @protocol Description of supported by the client call protocols
 -- @udp_p2p True, if UDP peer to peer connections are supported
 -- @udp_reflector True, if connection through UDP reflectors are supported
 -- @min_layer Minimum supported layer, use 65
 -- @max_layer Maximum supported layer, use 65
-local function createCall(user_id, udp_p2p, udp_reflector, min_layer, max_layer, cb, cmd)
+function I.createCall(user_id, udp_p2p, udp_reflector, min_layer, max_layer, cb, cmd)
   tdbot_function ({
     _ = "createCall",
     user_id = user_id,
@@ -1759,8 +1559,6 @@ local function createCall(user_id, udp_p2p, udp_reflector, min_layer, max_layer,
   }, cb or dl_cb, cmd)
 end
 
-I.createCall = createCall
-
 -- Accepts incoming call
 -- @call_id Call identifier
 -- @protocol Description of supported by the client call protocols
@@ -1768,7 +1566,7 @@ I.createCall = createCall
 -- @udp_reflector True, if connection through UDP reflectors are supported
 -- @min_layer Minimum supported layer, use 65
 -- @max_layer Maximum supported layer, use 65
-local function acceptCall(user_id, udp_p2p, udp_reflector, min_layer, max_layer, cb, cmd)
+function I.acceptCall(user_id, udp_p2p, udp_reflector, min_layer, max_layer, cb, cmd)
   tdbot_function ({
     _ = "acceptCall",
     user_id = user_id,
@@ -1782,14 +1580,12 @@ local function acceptCall(user_id, udp_p2p, udp_reflector, min_layer, max_layer,
   }, cb or dl_cb, cmd)
 end
 
-I.acceptCall = acceptCall
-
 --Discards a call
 -- @call_id Call identifier
 -- @is_disconnected True, if users was disconnected
 -- @duration Call duration in seconds
 -- @connection_id Identifier of a connection used during the call
-local function discardCall(user_id, is_disconnected, duration, connection_id, cb, cmd)
+function I.discardCall(user_id, is_disconnected, duration, connection_id, cb, cmd)
   tdbot_function ({
     _ = "discardCall",
     user_id = user_id,
@@ -1799,12 +1595,10 @@ local function discardCall(user_id, is_disconnected, duration, connection_id, cb
   }, cb or dl_cb, cmd)
 end
 
-I.discardCall = discardCall
-
 -- Sends call rating
 -- @call_id Call identifier @rating Call rating, 1-5
 -- @comment Optional user comment if rating is less than 5
-local function rateCall(user_id, rating, comment, cb, cmd)
+function I.rateCall(user_id, rating, comment, cb, cmd)
   local rating = rating or 0
   if not comment and  rating < 1 then
     comment = "nothing"
@@ -1820,13 +1614,10 @@ local function rateCall(user_id, rating, comment, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.rateCall = rateCall
-]]
-
 -- Sends call debug information
 -- @call_id Call identifier
 -- @debug Debug information in application specific format
-local function debugCall(call_id, debug, cb, cmd)
+function I.debugCall(call_id, debug, cb, cmd)
   tdbot_function ({
     _ = "debugCall",
     call_id = call_id,
@@ -1834,34 +1625,28 @@ local function debugCall(call_id, debug, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.debugCall = debugCall
-
 -- Adds user to black list
 -- @user_id User identifier
-local function blockUser(user_id, cb, cmd)
+function I.blockUser(user_id, cb, cmd)
   tdbot_function ({
     _ = "blockUser",
     user_id = user_id
   }, cb or dl_cb, cmd)
 end
 
-I.blockUser = blockUser
-
 -- Removes user from black list
 -- @user_id User identifier
-local function unblockUser(user_id, cb, cmd)
+function I.unblockUser(user_id, cb, cmd)
   tdbot_function ({
     _ = "unblockUser",
     user_id = user_id
   }, cb or dl_cb, cmd)
 end
 
-I.unblockUser = unblockUser
-
 -- Returns users blocked by the current user
 -- @offset Number of users to skip in result, must be non-negative
 -- @limit Maximum number of users to return, can't be greater than 100
-local function getBlockedUsers(offset, limit, cb, cmd)
+function I.getBlockedUsers(offset, limit, cb, cmd)
     if not limit or limit > 100 then
         limit = 100
     end
@@ -1872,11 +1657,9 @@ local function getBlockedUsers(offset, limit, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.getBlockedUsers = getBlockedUsers
-
 -- Adds new contacts/edits existing contacts, contacts user identifiers are ignored.
 -- @contacts List of contacts to import/edit
-local function importContacts(phone_number, first_name, last_name, user_id, cb, cmd)
+function I.importContacts(phone_number, first_name, last_name, user_id, cb, cmd)
   tdbot_function ({
     _ = "importContacts",
     contacts = {[0] = {
@@ -1889,12 +1672,10 @@ local function importContacts(phone_number, first_name, last_name, user_id, cb, 
   }, cb or dl_cb, cmd)
 end
 
-I.importContacts = importContacts
-
 -- Searches for specified query in the first name, last name and username of the known user contacts
 -- @query Query to search for, can be empty to return all contacts
 -- @limit Maximum number of users to be returned
-local function searchContacts(query, limit, cb, cmd)
+function I.searchContacts(query, limit, cb, cmd)
   tdbot_function ({
     _ = "searchContacts",
     query = query,
@@ -1902,25 +1683,21 @@ local function searchContacts(query, limit, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.searchContacts = searchContacts
-
 -- Deletes users from contacts list
 -- @user_ids Identifiers of users to be deleted
-local function deleteContacts(user_ids, cb, cmd)
+function I.deleteContacts(user_ids, cb, cmd)
   tdbot_function ({
     _ = "deleteContacts",
     user_ids = user_ids -- vector<int>
   }, cb or dl_cb, cmd)
 end
 
-I.deleteContacts = deleteContacts
-
 -- Returns profile photos of the user.
 -- Result of this query may outdated: some photos may be already deleted
 -- @user_id User identifier
 -- @offset Photos to skip, must be non-negative
 -- @limit Maximum number of photos to be returned, can't be greater than 100
-local function getUserProfilePhotos(user_id, offset, limit, cb, cmd)
+function I.getUserProfilePhotos(user_id, offset, limit, cb, cmd)
   tdbot_function ({
     _ = "getUserProfilePhotos",
     user_id = user_id,
@@ -1929,36 +1706,30 @@ local function getUserProfilePhotos(user_id, offset, limit, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.getUserProfilePhotos = getUserProfilePhotos
-
 -- Returns stickers from installed ordinary sticker sets corresponding to the given emoji
 -- @emoji String representation of emoji. If empty, returns all known
 -- @limit Maximum number of stickers to return
-local function getStickers(emoji, cb, cmd)
+function I.getStickers(emoji, cb, cmd)
   tdbot_function ({
     _ = "getStickers",
     emoji = emoji
   }, cb or dl_cb, cmd)
 end
 
-I.getStickers = getStickers
-
 -- Returns list of installed sticker sets
 -- @is_masks Pass true to return mask sticker sets, pass false to return ordinary sticker sets
-local function getInstalledStickerSets(is_masks, cb, cmd)
+function I.getInstalledStickerSets(is_masks, cb, cmd)
   tdbot_function ({
     _ = "getInstalledStickerSets",
     is_masks = is_masks
   }, cb or dl_cb, cmd)
 end
 
-I.getInstalledStickerSets = getInstalledStickerSets
-
 -- Returns list of archived sticker sets
 -- @is_masks Pass true to return mask stickers sets, pass false to return ordinary sticker sets
 -- @offsetstickerset_id Identifier of the sticker set from which return the result
 -- @limit Maximum number of sticker sets to return
-local function getArchivedStickerSets(is_masks, offsetstickerset_id, limit, cb, cmd)
+function I.getArchivedStickerSets(is_masks, offsetstickerset_id, limit, cb, cmd)
   tdbot_function ({
     _ = "getArchivedStickerSets",
     is_masks = is_masks,
@@ -1967,56 +1738,46 @@ local function getArchivedStickerSets(is_masks, offsetstickerset_id, limit, cb, 
   }, cb or dl_cb, cmd)
 end
 
-I.getArchivedStickerSets = getArchivedStickerSets
-
 -- Returns list of trending sticker sets
-local function getTrendingStickerSets(dl_cb, cmd)
+function I.getTrendingStickerSets(dl_cb, cmd)
   tdbot_function ({
     _ = "getTrendingStickerSets"
   }, cb or dl_cb, cmd)
 end
 
-I.getTrendingStickerSets = getTrendingStickerSets
-
 -- Returns list of sticker sets attached to a file, currently only photos and videos can have attached sticker sets
 -- @file_id File identifier
-local function getAttachedStickerSets(file_id, cb, cmd)
+function I.getAttachedStickerSets(file_id, cb, cmd)
   tdbot_function ({
     _ = "getAttachedStickerSets",
     file_id = file_id
   }, cb or dl_cb, cmd)
 end
 
-I.getAttachedStickerSets = getAttachedStickerSets
-
 -- Returns information about sticker set by its identifier
 -- @set_id Identifier of the sticker set
-local function getStickerSet(set_id, cb, cmd)
+function I.getStickerSet(set_id, cb, cmd)
   tdbot_function ({
     _ = "getStickerSet",
     set_id = set_id
   }, cb or dl_cb, cmd)
 end
 
-I.getStickerSet = getStickerSet
-
 -- Searches sticker set by its short name
 -- @name Name of the sticker set
-local function searchStickerSet(name, cb, cmd)
+function I.searchStickerSet(name, cb, cmd)
   tdbot_function ({
     _ = "searchStickerSet",
     name = name
   }, cb or dl_cb, cmd)
 end
 
-I.searchStickerSet = searchStickerSet
-
 -- Installs/uninstalls or enables/archives sticker set.
 -- @set_id Identifier of the sticker set
 -- @is_installed New value of is_installed
 -- @is_archived New value of is_archived
 -- A sticker set can't be installed and archived simultaneously
-local function changeStickerSet(set_id, is_installed, is_archived, cb, cmd)
+function I.changeStickerSet(set_id, is_installed, is_archived, cb, cmd)
   tdbot_function ({
     _ = "changeStickerSet",
     set_id = set_id,
@@ -2025,23 +1786,19 @@ local function changeStickerSet(set_id, is_installed, is_archived, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.changeStickerSet = changeStickerSet
-
 -- Informs that some trending sticker sets are viewed by the user
 -- @stickerset_ids Identifiers of viewed trending sticker sets
-local function viewTrendingStickerSets(stickerset_ids, cb, cmd)
+function I.viewTrendingStickerSets(stickerset_ids, cb, cmd)
   tdbot_function ({
     _ = "viewTrendingStickerSets",
     stickerset_ids = stickerset_ids -- vector<int>
   }, cb or dl_cb, cmd)
 end
 
-I.viewTrendingStickerSets = viewTrendingStickerSets
-
 -- Changes the order of installed sticker sets
 -- @is_masks Pass true to change mask sticker sets order, pass false to change ordinary sticker sets order
 -- @stickerset_ids Identifiers of installed sticker sets in the new right order
-local function reorderInstalledStickerSets(is_masks, stickerset_ids, cb, cmd)
+function I.reorderInstalledStickerSets(is_masks, stickerset_ids, cb, cmd)
   tdbot_function ({
     _ = "reorderInstalledStickerSets",
     is_masks = is_masks,
@@ -2049,25 +1806,21 @@ local function reorderInstalledStickerSets(is_masks, stickerset_ids, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.reorderInstalledStickerSets = reorderInstalledStickerSets
-
 -- Returns list of recently used stickers
 -- @is_attached Pass true to return stickers and masks recently attached to photo or video files, pass false to return recently sent stickers
-local function getRecentStickers(is_attached, cb, cmd)
+function I.getRecentStickers(is_attached, cb, cmd)
   tdbot_function ({
     _ = "getRecentStickers",
     is_attached = is_attached
   }, cb or dl_cb, cmd)
 end
 
-I.getRecentStickers = getRecentStickers
-
 -- Manually adds new sticker to the list of recently used stickers.
 -- New sticker is added to the beginning of the list.
 -- If the sticker is already in the list, at first it is removed from the list
 -- @is_attached Pass true to add the sticker to the list of stickers recently attached to photo or video files, pass false to add the sticker to the list of recently sent stickers
 -- @sticker Sticker file to add
-local function addRecentSticker(is_attached, sticker, cb, cmd)
+function I.addRecentSticker(is_attached, sticker, cb, cmd)
   tdbot_function ({
     _ = "addRecentSticker",
     is_attached = is_attached,
@@ -2075,12 +1828,10 @@ local function addRecentSticker(is_attached, sticker, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.addRecentSticker = addRecentSticker
-
 -- Removes a sticker from the list of recently used stickers
 -- @is_attached Pass true to remove the sticker from the list of stickers recently attached to photo or video files, pass false to remove the sticker from the list of recently sent stickers
 -- @sticker Sticker file to delete
-local function deleteRecentSticker(is_attached, sticker, cb, cmd)
+function I.deleteRecentSticker(is_attached, sticker, cb, cmd)
   tdbot_function ({
     _ = "deleteRecentSticker",
     is_attached = is_attached,
@@ -2088,77 +1839,63 @@ local function deleteRecentSticker(is_attached, sticker, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.deleteRecentSticker = deleteRecentSticker
-
 -- Clears list of recently used stickers
 -- @is_attached Pass true to clear list of stickers recently attached to photo or video files, pass false to clear the list of recently sent stickers
-local function clearRecentStickers(is_attached, cb, cmd)
+function I.clearRecentStickers(is_attached, cb, cmd)
   tdbot_function ({
     _ = "clearRecentStickers",
     is_attached = is_attached
   }, cb or dl_cb, cmd)
 end
 
-I.clearRecentStickers = clearRecentStickers
-
 -- Returns emojis corresponding to a sticker
 -- @sticker Sticker file identifier
-local function getStickerEmojis(sticker, cb, cmd)
+function I.getStickerEmojis(sticker, cb, cmd)
   tdbot_function ({
     _ = "getStickerEmojis",
     sticker = getInputFile(sticker)
   }, cb or dl_cb, cmd)
 end
 
-I.getStickerEmojis = getStickerEmojis
-
 -- Returns saved animations
-local function getSavedAnimations(dl_cb, cmd)
+function I.getSavedAnimations(dl_cb, cmd)
   tdbot_function ({
     _ = "getSavedAnimations",
   }, cb or dl_cb, cmd)
 end
-
-I.getSavedAnimations = getSavedAnimations
 
 -- Manually adds new animation to the list of saved animations.
 -- New animation is added to the beginning of the list.
 -- If the animation is already in the list, at first it is removed from the list.
 -- Only non-secret video animations with MIME type "video/mp4" can be added to the list
 -- @animation Animation file to add. Only known to server animations (i. e. successfully sent via message) can be added to the list
-local function addSavedAnimation(animation, cb, cmd)
+function I.addSavedAnimation(animation, cb, cmd)
   tdbot_function ({
     _ = "addSavedAnimation",
     animation = getInputFile(animation)
   }, cb or dl_cb, cmd)
 end
 
-I.addSavedAnimation = addSavedAnimation
-
 -- Removes animation from the list of saved animations
 -- @animation Animation file to delete
-local function deleteSavedAnimation(animation, cb, cmd)
+function I.deleteSavedAnimation(animation, cb, cmd)
   tdbot_function ({
     _ = "deleteSavedAnimation",
     animation = getInputFile(animation)
   }, cb or dl_cb, cmd)
 end
 
-I.deleteSavedAnimation = deleteSavedAnimation
-
 -- Returns up to 20 recently used inline bots in the order of the last usage
-local function getRecentInlineBots(cb, cmd)
+function I.getRecentInlineBots(cb, cmd)
   tdbot_function ({
     _ = "getRecentInlineBots",
   }, cb or dl_cb, cmd)
 end
 
-I.getRecentInlineBots = getRecentInlineBots
-
 -- Searches for recently used hashtags by their prefix
 -- @prefix Hashtag prefix to search for
 -- @limit Maximum number of hashtags to return
-local function searchHashtags(prefix, limit, cb, cmd)
+function I.searchHashtags(prefix, limit, cb, cmd)
   tdbot_function ({
     _ = "searchHashtags",
     prefix = prefix,
@@ -2166,37 +1903,31 @@ local function searchHashtags(prefix, limit, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.searchHashtags = searchHashtags
-
 -- Deletes a hashtag from the list of recently used hashtags
 -- @hashtag The hashtag to delete
-local function deleteRecentHashtag(hashtag, cb, cmd)
+function I.deleteRecentHashtag(hashtag, cb, cmd)
   tdbot_function ({
     _ = "searchHashtags",
     hashtag = hashtag
   }, cb or dl_cb, cmd)
 end
 
-I.deleteRecentHashtag = deleteRecentHashtag
-
 -- Returns web page preview by text of the message.
 -- Do not call this function to often
 -- Returns error 404 if web page has no preview
 -- @message_text Message text
-local function getWebPagePreview(message_text, cb, cmd)
+function I.getWebPagePreview(message_text, cb, cmd)
   tdbot_function ({
     _ = "getWebPagePreview",
     message_text = message_text
   }, cb or dl_cb, cmd)
 end
 
-I.getWebPagePreview = getWebPagePreview
-
 -- Returns web page instant view if available.
 -- Returns error 404 if web page has no instant view
 -- @url Web page URL
 -- @forcefull If true, full web page instant view will be returned
-local function getWebPageInstantView(url, forcefull, cb, cmd)
+function I.getWebPageInstantView(url, forcefull, cb, cmd)
   tdbot_function ({
     _ = "getWebPageInstantView",
     url = url,
@@ -2204,12 +1935,10 @@ local function getWebPageInstantView(url, forcefull, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.getWebPageInstantView = getWebPageInstantView
-
 -- Returns notification settings for a given scope
 -- @scope Scope to return information about notification settings
 -- scope = Chat(chat_id)|PrivateChats|GroupChats|AllChats|
-local function getNotificationSettings(scope, chat_id, cb, cmd)
+function I.getNotificationSettings(scope, chat_id, cb, cmd)
   tdbot_function ({
     _ = "getNotificationSettings",
     scope = {
@@ -2219,13 +1948,11 @@ local function getNotificationSettings(scope, chat_id, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.getNotificationSettings = getNotificationSettings
-
 -- Changes notification settings for a given scope
 -- @scope Scope to change notification settings
 -- @notification_settings New notification settings for given scope
 -- scope = Chat(chat_id)|PrivateChats|GroupChats|AllChats|
-local function setNotificationSettings(scope, chat_id, mute_for, show_preview, cb, cmd)
+function I.setNotificationSettings(scope, chat_id, mute_for, show_preview, cb, cmd)
   tdbot_function ({
     _ = "setNotificationSettings",
     scope = {
@@ -2241,49 +1968,41 @@ local function setNotificationSettings(scope, chat_id, mute_for, show_preview, c
   }, cb or dl_cb, cmd)
 end
 
-I.setNotificationSettings = setNotificationSettings
-
 -- Resets all notification settings to the default value.
 -- By default the only muted chats are supergroups, sound is set to 'default' and message previews are showed
-local function resetAllNotificationSettings(dl_cb, cmd)
+function I.resetAllNotificationSettings(dl_cb, cmd)
   tdbot_function ({
     _ = "resetAllNotificationSettings"
   }, cb or dl_cb, cmd)
 end
-
-I.resetAllNotificationSettings = resetAllNotificationSettings
 
 -- Uploads new profile photo for logged in user.
 -- Photo will not change until change will be synchronized with the server.
 -- Photo will not be changed if application is killed before it can send request to the server.
 -- If something changes, updateUser will be sent
 -- @photo Profile photo to set. inputFileId and inputFilePersistentId may be unsupported
-local function setProfilePhoto(photo, cb, cmd)
+function I.setProfilePhoto(photo, cb, cmd)
   tdbot_function ({
     _ = "setProfilePhoto",
     photo = getInputFile(photo)
   }, cb or dl_cb, cmd)
 end
 
-I.setProfilePhoto = setProfilePhoto
-
 -- Deletes profile photo.
 -- If something changes, updateUser will be sent
 -- @profile_photoid Identifier of profile photo to delete
-local function deleteProfilePhoto(profile_photo_id, cb, cmd)
+function I.deleteProfilePhoto(profile_photo_id, cb, cmd)
   tdbot_function ({
     _ = "deleteProfilePhoto",
     profile_photo_id = profile_photo_id
   }, cb or dl_cb, cmd)
 end
 
-I.deleteProfilePhoto = deleteProfilePhoto
-
 -- Changes first and last names of logged in user.
 -- If something changes, updateUser will be sent
 -- @first_name New value of user first name, 1-255 characters
 -- @last_name New value of optional user last name, 0-255 characters
-local function changeName(first_name, last_name, cb, cmd)
+function I.changeName(first_name, last_name, cb, cmd)
   tdbot_function ({
     _ = "changeName",
     first_name = first_name,
@@ -2291,37 +2010,31 @@ local function changeName(first_name, last_name, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.changeName = changeName
-
 -- Changes about information of logged in user
 -- @about New value of userFull.about, 0-70 characters without line feeds
-local function changeAbout(about, cb, cmd)
+function I.changeAbout(about, cb, cmd)
   tdbot_function ({
     _ = "changeAbout",
     about = about
   }, cb or dl_cb, cmd)
 end
 
-I.changeAbout = changeAbout
-
 -- Changes username of logged in user.
 -- If something changes, updateUser will be sent
 -- @username New value of username. Use empty string to remove username
-local function changeUsername(username, cb, cmd)
+function I.changeUsername(username, cb, cmd)
   tdbot_function ({
     _ = "changeUsername",
     username = username
   }, cb or dl_cb, cmd)
 end
 
-I.changeUsername = changeUsername
-
 -- Changes user's phone number and sends authentication code to the new user's phone number.
 -- Returns authStateWaitCode with information about sent code on success
 -- @phone_number New user's phone number in any reasonable format
 -- @allow_flash_call Pass True, if code can be sent via flash call to the specified phone number
 -- @is_current_phone_number Pass true, if the phone number is used on the current device. Ignored if allow_flash_call is False
-local function changePhoneNumber(phone_number, allow_flash_call, is_current_phone_number, cb, cmd)
+function I.changePhoneNumber(phone_number, allow_flash_call, is_current_phone_number, cb, cmd)
   tdbot_function ({
     _ = "changePhoneNumber",
     phone_number = phone_number,
@@ -2330,65 +2043,53 @@ local function changePhoneNumber(phone_number, allow_flash_call, is_current_phon
   }, cb or dl_cb, cmd)
 end
 
-I.changePhoneNumber = changePhoneNumber
-
 -- Resends authentication code sent to change user's phone number.
 -- Works only if in previously received authStateWaitCode next_codetype was not null.
 -- Returns authStateWaitCode on success
-local function resendChangePhoneNumberCode(dl_cb, cmd)
+function I.resendChangePhoneNumberCode(dl_cb, cmd)
   tdbot_function ({
     _ = "resendChangePhoneNumberCode",
   }, cb or dl_cb, cmd)
 end
 
-I.resendChangePhoneNumberCode = resendChangePhoneNumberCode
-
 -- Checks authentication code sent to change user's phone number.
 -- Returns authStateOk on success
 -- @code Verification code from SMS, phone call or flash call
-local function checkChangePhoneNumberCode(code, cb, cmd)
+function I.checkChangePhoneNumberCode(code, cb, cmd)
   tdbot_function ({
     _ = "checkChangePhoneNumberCode",
     code = code
   }, cb or dl_cb, cmd)
 end
 
-I.checkChangePhoneNumberCode = checkChangePhoneNumberCode
-
 -- Returns all active sessions of logged in user
-local function getActiveSessions(dl_cb, cmd)
+function I.getActiveSessions(dl_cb, cmd)
   tdbot_function ({
     _ = "getActiveSessions",
   }, cb or dl_cb, cmd)
 end
 
-I.getActiveSessions = getActiveSessions
-
 -- Terminates another session of logged in user
 -- @session_id Session identifier
-local function terminateSession(session_id, cb, cmd)
+function I.terminateSession(session_id, cb, cmd)
   tdbot_function ({
     _ = "terminateSession",
     session_id = session_id
   }, cb or dl_cb, cmd)
 end
 
-I.terminateSession = terminateSession
-
 -- Terminates all other sessions of logged in user
-local function terminateAllOtherSessions(dl_cb, cmd)
+function I.terminateAllOtherSessions(dl_cb, cmd)
   tdbot_function ({
     _ = "terminateAllOtherSessions",
   }, cb or dl_cb, cmd)
 end
 
-I.terminateAllOtherSessions = terminateAllOtherSessions
-
 -- Gives or revokes all members of the group administrator rights.
 -- Needs creator privileges in the group
 -- @group_id Identifier of the group
 -- @everyone_is_administrator New value of everyone_is_administrator
-local function toggleGroupEditors(group_id, anyone_can_edit, cb, cmd)
+function I.toggleGroupEditors(group_id, anyone_can_edit, cb, cmd)
   tdbot_function ({
     _ = "toggleGroupEditors",
     group_id = getChatId(group_id)._,
@@ -2396,13 +2097,11 @@ local function toggleGroupEditors(group_id, anyone_can_edit, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.toggleGroupEditors = toggleGroupEditors
-
 -- Changes username of the channel.
 -- Needs creator privileges in the channel
 -- @channel_id Identifier of the channel
 -- @username New value of username. Use empty string to remove username
-local function changeChannelUsername(channel_id, username, cb, cmd)
+function I.changeChannelUsername(channel_id, username, cb, cmd)
   tdbot_function ({
     _ = "changeChannelUsername",
     channel_id = getChatId(channel_id)._,
@@ -2410,14 +2109,12 @@ local function changeChannelUsername(channel_id, username, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.changeChannelUsername = changeChannelUsername
-
 -- Gives or revokes right to invite new members to all current members of the channel.
 -- Needs appropriate rights in the channel.
 -- Available only for supergroups
 -- @channel_id Identifier of the channel
 -- @anyone_can_invite New value of anyone_can_invite
-local function toggleChannelInvites(channel_id, anyone_can_invite, cb, cmd)
+function I.toggleChannelInvites(channel_id, anyone_can_invite, cb, cmd)
   tdbot_function ({
     _ = "toggleChannelInvites",
     channel_id = getChatId(channel_id)._,
@@ -2425,14 +2122,12 @@ local function toggleChannelInvites(channel_id, anyone_can_invite, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.toggleChannelInvites = toggleChannelInvites
-
 -- Enables or disables sender signature on sent messages in the channel.
 -- Needs appropriate rights in the channel.
 -- Not available for supergroups
 -- @channel_id Identifier of the channel
 -- @sign_messages New value of sign_messages
-local function toggleChannelSignMessages(channel_id, sign_messages, cb, cmd)
+function I.toggleChannelSignMessages(channel_id, sign_messages, cb, cmd)
   tdbot_function ({
     _ = "toggleChannelSignMessages",
     channel_id = getChatId(channel_id)._,
@@ -2440,13 +2135,11 @@ local function toggleChannelSignMessages(channel_id, sign_messages, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.toggleChannelSignMessages = toggleChannelSignMessages
-
 -- Changes information about the channel.
 -- Needs appropriate rights in the supergroup channel
 -- @channel_id Identifier of the channel
 -- @param_description New channel description, 0-255 characters
-local function changeChannelDescription(channel_id, description, cb, cmd)
+function I.changeChannelDescription(channel_id, description, cb, cmd)
   tdbot_function ({
     _ = "changeChannelDescription",
     channel_id = getChatId(channel_id)._,
@@ -2454,14 +2147,12 @@ local function changeChannelDescription(channel_id, description, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.changeChannelDescription = changeChannelDescription
-
 -- Pins a message in a supergroup channel chat.
 -- Needs appropriate rights in the channel
 -- @channel_id Identifier of the channel
 -- @message_id Identifier of the new pinned message
 -- @disable_notification True, if there should be no notification about the pinned message
-local function pinChannelMessage(channel_id, message_id, disable_notification, cb, cmd)
+function I.pinChannelMessage(channel_id, message_id, disable_notification, cb, cmd)
   tdbot_function ({
     _ = "pinChannelMessage",
     channel_id = getChatId(channel_id)._,
@@ -2470,25 +2161,21 @@ local function pinChannelMessage(channel_id, message_id, disable_notification, c
   }, cb or dl_cb, cmd)
 end
 
-I.pinChannelMessage = pinChannelMessage
-
 -- Removes pinned message in the supergroup channel.
 -- Needs appropriate rights in the channel
 -- @channel_id Identifier of the channel
-local function unpinChannelMessage(channel_id, cb, cmd)
+function I.unpinChannelMessage(channel_id, cb, cmd)
   tdbot_function ({
     _ = "unpinChannelMessage",
     channel_id = getChatId(channel_id)._
   }, cb or dl_cb, cmd)
 end
 
-I.unpinChannelMessage = unpinChannelMessage
-
 -- Reports some supergroup channel messages from a user as spam messages
 -- @channel_id Channel identifier
 -- @user_id User identifier
 -- @message_ids Identifiers of messages sent in the supergroup by the user, the list should be non-empty
-local function reportChannelSpam(channel_id, user_id, message_ids, cb, cmd)
+function I.reportChannelSpam(channel_id, user_id, message_ids, cb, cmd)
   tdbot_function ({
     _ = "reportChannelSpam",
     channel_id = getChatId(channel_id)._,
@@ -2496,8 +2183,6 @@ local function reportChannelSpam(channel_id, user_id, message_ids, cb, cmd)
     message_ids = message_ids -- vector<int>
   }, cb or dl_cb, cmd)
 end
-
-I.reportChannelSpam = reportChannelSpam
 
 -- Returns information about channel members or banned from channel users.
 -- Can be used only if channel_full->can_get_members == true
@@ -2507,7 +2192,7 @@ I.reportChannelSpam = reportChannelSpam
 -- @offset Number of channel users to skip
 -- @limit Maximum number of users be returned, can't be greater than 200
 -- filter = Recent|Administrators|Kicked|Bots
-local function getChannelMembers(channel_id, filter, offset, limit, cb, cmd)
+function I.getChannelMembers(channel_id, filter, offset, limit, cb, cmd)
   if not limit or limit > 200 then
     limit = 200
   end
@@ -2523,32 +2208,26 @@ local function getChannelMembers(channel_id, filter, offset, limit, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.getChannelMembers = getChannelMembers
-
 -- Deletes channel along with all messages in corresponding chat.
 -- Releases channel username and removes all members.
 -- Needs creator privileges in the channel.
 -- Channels with more than 1000 members can't be deleted
 -- @channel_id Identifier of the channel
-local function deleteChannel(channel_id, cb, cmd)
+function I.deleteChannel(channel_id, cb, cmd)
   tdbot_function ({
     _ = "deleteChannel",
     channel_id = getChatId(channel_id)._
   }, cb or dl_cb, cmd)
 end
 
-I.deleteChannel = deleteChannel
-
 -- Closes secret chat, effectively transfering its state to "closed"
 -- @secret_chat_id Secret chat identifier
-local function closeSecretChat(secret_chat_id, cb, cmd)
+function I.closeSecretChat(secret_chat_id, cb, cmd)
   tdbot_function ({
     _ = "closeSecretChat",
     secret_chat_id = secret_chat_id
   }, cb or dl_cb, cmd)
 end
-
-I.closeSecretChat = closeSecretChat
 
 -- Returns list of service actions taken by chat members and administrators in the last 48 hours, available only in channels.
 -- Requires administrator rights.
@@ -2562,7 +2241,7 @@ I.closeSecretChat = closeSecretChat
 -- MessageEdited|MessageDeleted|MessagePinned|MessageUnpinned|MemberJoined|MemberLeft|MemberInvited|MemberPromoted|MemberRestricted|TitleChanged
 -- message_edits:Bool message_deletions:Bool message_pins:Bool member_joins:Bool member_leaves:Bool member_invites:Bool member_promotions:Bool member_restrictions:Bool info_changes:Bool setting_changes:Bool = ChatEventLogFilters;
 -- @user_ids User identifiers, which events to return, defaults to all users
-local function getChatEventLog(chat_id, query, from_event_id, limit, user_ids, message_edits ,message_deletions, message_pins, member_joins, member_leaves, member_invites, member_promotions, member_restrictions, info_changes, setting_changes, cb, cmd)
+function I.getChatEventLog(chat_id, query, from_event_id, limit, user_ids, message_edits ,message_deletions, message_pins, member_joins, member_leaves, member_invites, member_promotions, member_restrictions, info_changes, setting_changes, cb, cmd)
   if not limit or limit > 100 then
     limit = 100
   end
@@ -2591,13 +2270,11 @@ local function getChatEventLog(chat_id, query, from_event_id, limit, user_ids, m
   }, cb or dl_cb, cmd)
 end
 
-I.getChatEventLog = getChatEventLog
-
 -- Returns invoice payment form.
 -- The method should be called when user presses inlineKeyboardButtonBuy
 -- @chat_id Chat identifier of the Invoice message
 -- @message_id Message identifier
-local function getPaymentForm(chat_id, message_id, cb, cmd)
+function I.getPaymentForm(chat_id, message_id, cb, cmd)
   tdbot_function ({
     _ = "getPaymentForm",
     chat_id = chat_id,
@@ -2605,13 +2282,11 @@ local function getPaymentForm(chat_id, message_id, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.getPaymentForm = getPaymentForm
-
 -- Validates order information provided by the user and returns available shipping options for flexible invoice
 -- @chat_id Chat identifier of the Invoice message
 -- @message_id Message identifier @order_info Order information, provided by the user
 -- @allow_save True, if order information can be saved
-local function validateOrderInfo(chat_id, message_id, name, phone_number, email, country_code, state, city, street_line1, street_line2, post_code, allow_save, cb, cmd)
+function I.validateOrderInfo(chat_id, message_id, name, phone_number, email, country_code, state, city, street_line1, street_line2, post_code, allow_save, cb, cmd)
   tdbot_function ({
     _ = "validateOrderInfo",
     chat_id = chat_id,
@@ -2635,15 +2310,13 @@ local function validateOrderInfo(chat_id, message_id, name, phone_number, email,
   }, cb or dl_cb, cmd)
 end
 
-I.validateOrderInfo = validateOrderInfo
-
 -- Sends filled payment form to the bot for the final verification
 -- @chat_id Chat identifier of the Invoice message
 -- @message_id Message identifier
 -- @order_info_id Identifier returned by ValidateOrderInfo or empty string
 -- @shipping_option_id Identifier of a chosen shipping option, if applicable
 -- @credentials Credentials choosed by user for payment
-local function sendPaymentForm(chat_id, message_id, order_info_id, shipping_option_id, credentials, cb, cmd)
+function I.sendPaymentForm(chat_id, message_id, order_info_id, shipping_option_id, credentials, cb, cmd)
   tdbot_function ({
     _ = "sendPaymentForm",
     chat_id = chat_id,
@@ -2654,12 +2327,10 @@ local function sendPaymentForm(chat_id, message_id, order_info_id, shipping_opti
   }, cb or dl_cb, cmd)
 end
 
-I.sendPaymentForm = sendPaymentForm
-
 -- Returns information about successful payment
 -- @chat_id Chat identifier of the PaymentSuccessful message
 -- @message_id Message identifier
-local function getPaymentReceipt(chat_id, message_id, cb, cmd)
+function I.getPaymentReceipt(chat_id, message_id, cb, cmd)
   tdbot_function ({
     _ = "getPaymentReceipt",
     chat_id = chat_id,
@@ -2667,57 +2338,45 @@ local function getPaymentReceipt(chat_id, message_id, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.getPaymentReceipt = getPaymentReceipt
-
 -- Returns saved order info if any
-local function getSavedOrderInfo(cb, cmd)
+function I.getSavedOrderInfo(cb, cmd)
   tdbot_function ({
     _ = "getSavedOrderInfo",
   }, cb or dl_cb, cmd)
 end
 
-I.getSavedOrderInfo = getSavedOrderInfo
-
 -- Deletes saved order info
-local function deleteSavedOrderInfo(cb, cmd)
+function I.deleteSavedOrderInfo(cb, cmd)
   tdbot_function ({
     _ = "deleteSavedOrderInfo",
   }, cb or dl_cb, cmd)
 end
 
-I.deleteSavedOrderInfo = deleteSavedOrderInfo
-
 -- Deletes saved credentials for all payments provider bots
-local function deleteSavedCredentials(cb, cmd)
+function I.deleteSavedCredentials(cb, cmd)
   tdbot_function ({
     _ = "deleteSavedCredentials",
   }, cb or dl_cb, cmd)
 end
 
-I.deleteSavedCredentials = deleteSavedCredentials
-
 -- Returns user that can be contacted to get support
-local function getSupportUser(dl_cb, cmd)
+function I.getSupportUser(dl_cb, cmd)
   tdbot_function ({
     _ = "getSupportUser",
   }, cb or dl_cb, cmd)
 end
 
-I.getSupportUser = getSupportUser
-
 -- Returns background wallpapers
-local function getWallpapers(dl_cb, cmd)
+function I.getWallpapers(dl_cb, cmd)
   tdbot_function ({
     _ = "getWallpapers",
   }, cb or dl_cb, cmd)
 end
 
-I.getWallpapers = getWallpapers
-
 -- Registers current used device for receiving push notifications
 -- @device_token Device token
 -- device_token = apns|gcm|mpns|simplePush|ubuntuPhone|blackberry
-local function registerDevice(device_token, token, device_tokenset, cb, cmd)
+function I.registerDevice(device_token, token, device_tokenset, cb, cmd)
   local dToken = {_ = device_token .. 'DeviceToken', token = token}
 
   if device_tokenset then
@@ -2729,8 +2388,6 @@ local function registerDevice(device_token, token, device_tokenset, cb, cmd)
     device_token = dToken
   }, cb or dl_cb, cmd)
 end
-
-I.registerDevice = registerDevice
 
 -- Changes privacy settings
 -- @key Privacy key
@@ -2746,7 +2403,7 @@ I.registerDevice = registerDevice
 -- @privacyRuleDisallowUsers Rule to disallow all specified users
 -- key = UserStatus|ChatInvite
 -- rules = AllowAll|AllowContacts|AllowUsers(user_ids)|DisallowAll|DisallowContacts|DisallowUsers(user_ids)
-local function setPrivacy(key, rule, allowed_user_ids, disallowed_user_ids, cb, cmd)
+function I.setPrivacy(key, rule, allowed_user_ids, disallowed_user_ids, cb, cmd)
   local rules = {[0] = {_ = 'PrivacyRule' .. rule}}
 
   if allowed_user_ids then
@@ -2798,12 +2455,10 @@ local function setPrivacy(key, rule, allowed_user_ids, disallowed_user_ids, cb, 
   }, cb or dl_cb, cmd)
 end
 
-I.setPrivacy = setPrivacy
-
 -- Returns current privacy settings
 -- @key Privacy key
 -- key = UserStatus|ChatInvite
-local function getPrivacy(key, cb, cmd)
+function I.getPrivacy(key, cb, cmd)
   tdbot_function ({
     _ = "getPrivacy",
     key = {
@@ -2812,27 +2467,23 @@ local function getPrivacy(key, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.getPrivacy = getPrivacy
-
 -- Returns value of an option by its name.
 -- See list of available options on https://core.telegram.org/tdlib/options.
 -- Can be called before authorization
 -- @name Name of the option
-local function getOption(name, cb, cmd)
+function I.getOption(name, cb, cmd)
   tdbot_function ({
     _ = "getOption",
     name = name
   }, cb or dl_cb, cmd)
 end
 
-I.getOption = getOption
-
 -- Sets value of an option.
 -- See list of available options on https://core.telegram.org/tdlib/options.
 -- Only writable options can be set
 -- @name Name of the option
 -- @value New value of the option
-local function setOption(name, option, value, cb, cmd)
+function I.setOption(name, option, value, cb, cmd)
   tdbot_function ({
     _ = "setOption",
     name = name,
@@ -2843,11 +2494,9 @@ local function setOption(name, option, value, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.setOption = setOption
-
 -- Changes period of inactivity, after which the account of currently logged in user will be automatically deleted
 -- @ttl New account TTL
-local function changeAccountTtl(days, cb, cmd)
+function I.changeAccountTtl(days, cb, cmd)
   tdbot_function ({
     _ = "changeAccountTtl",
     ttl = {
@@ -2857,46 +2506,38 @@ local function changeAccountTtl(days, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.changeAccountTtl = changeAccountTtl
-
 -- Returns period of inactivity, after which the account of currently logged in user will be automatically deleted
-local function getAccountTtl(dl_cb, cmd)
+function I.getAccountTtl(dl_cb, cmd)
   tdbot_function ({
     _ = "getAccountTtl",
   }, cb or dl_cb, cmd)
 end
 
-I.getAccountTtl = getAccountTtl
-
 -- Deletes the account of currently logged in user, deleting from the server all information associated with it.
 -- Account's phone number can be used to create new account, but only once in two weeks
 -- @reason Optional reason of account deletion
-local function deleteAccount(reason, cb, cmd)
+function I.deleteAccount(reason, cb, cmd)
   tdbot_function ({
     _ = "deleteAccount",
     reason = reason
   }, cb or dl_cb, cmd)
 end
 
-I.deleteAccount = deleteAccount
-
 -- Returns current chat report spam state
 -- @chat_id Chat identifier
-local function getChatReportSpamState(chat_id, cb, cmd)
+function I.getChatReportSpamState(chat_id, cb, cmd)
   tdbot_function ({
     _ = "getChatReportSpamState",
     chat_id = chat_id
   }, cb or dl_cb, cmd)
 end
 
-I.getChatReportSpamState = getChatReportSpamState
-
 -- Reports chat as a spam chat or as not a spam chat.
 -- Can be used only if ChatReportSpamState.can_report_spam is true.
 -- After this request ChatReportSpamState.can_report_spam became false forever
 -- @chat_id Chat identifier
 -- @is_spam_chat If true, chat will be reported as a spam chat, otherwise it will be marked as not a spam chat
-local function changeChatReportSpamState(chat_id, is_spam_chat, cb, cmd)
+function I.changeChatReportSpamState(chat_id, is_spam_chat, cb, cmd)
   tdbot_function ({
     _ = "changeChatReportSpamState",
     chat_id = chat_id,
@@ -2904,13 +2545,11 @@ local function changeChatReportSpamState(chat_id, is_spam_chat, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.changeChatReportSpamState = changeChatReportSpamState
-
 -- Reports chat to Telegram moderators.
 -- Can be used only for a channel chat or a private chat with a bot, because all other chats can't be checked by moderators
 -- @chat_id Chat identifier
 -- @reason Reason, the chat is reported for Spam|Violence|Pornography|Other
-local function reportChat(chat_id, reason, cb, cmd)
+function I.reportChat(chat_id, reason, cb, cmd)
   tdbot_function ({
     _ = "reportChat",
     chat_id = chat_id,
@@ -2918,27 +2557,21 @@ local function reportChat(chat_id, reason, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.reportChat = reportChat
-
 --  Returns storage usage statistics
 -- @chat_limit Maximum number of chats with biggest storage usage for which separate statistics should be returned. All other chats will be grouped in entries with chat_id == 0. If chat info database is not used, chat_limit is ignored and is always set to 0
-local function getStorageStatistics(hat_limit, cb, cmd)
+function I.getStorageStatistics(hat_limit, cb, cmd)
   tdbot_function ({
     _ = "getStorageStatistics",
     hat_limit = hat_limit
   }, cb or dl_cb, cmd)
 end
 
-I.getStorageStatistics = getStorageStatistics
-
 -- Quickly returns approximate storage usage statistics
-local function getStorageStatisticsFast(cb, cmd)
+function I.getStorageStatisticsFast(cb, cmd)
   tdbot_function ({
     _ = "getStorageStatisticsFast"
   }, cb or dl_cb, cmd)
 end
-
-I.getStorageStatisticsFast = getStorageStatisticsFast
 
 -- description Optimizes storage usage, i.e. deletes some files and return new storage usage statistics. Secret thumbnails can't be deleted
 -- @size Limit on total size of files after deletion. Pass -1 to use default limit
@@ -2949,7 +2582,7 @@ I.getStorageStatisticsFast = getStorageStatisticsFast
 -- @chat_ids If not empty, only files from the given chats are considered. Use 0 as chat identifier to delete files not belonging to any chat, for example profile photos
 -- @exclude_chat_ids If not empty, files from the given chats are exluded. Use 0 as chat identifier to exclude all files not belonging to any chat, for example profile photos
 -- @chat_limit Same as in getStorageStatistics. Affects only returned statistics
-local function optimizeStorage(size, ttl, count, immunity_delay, file_types, chat_ids, exclude_chat_ids, chat_limit, cb, cmd)
+function I.optimizeStorage(size, ttl, count, immunity_delay, file_types, chat_ids, exclude_chat_ids, chat_limit, cb, cmd)
   tdbot_function ({
     _ = "optimizeStorage",
     size = size,
@@ -2963,14 +2596,12 @@ local function optimizeStorage(size, ttl, count, immunity_delay, file_types, cha
   }, cb or dl_cb, cmd)
 end
 
-I.optimizeStorage = optimizeStorage
-
 -- Sets current network type.
 -- Can be called before authorization.
 -- Call to this method forces reopening of all network connections mitigating delay in switching between different networks, so it should be called whenever network is changed even network type remains the same.
 -- Network type is used to check if library can use network at all and for collecting detailed network data usage statistics
 -- @type New network type = None|Mobile|MobileRoaming|WiFi|Other
-local function setNetworkType(type, cb, cmd)
+function I.setNetworkType(type, cb, cmd)
   tdbot_function ({
     _ = "setNetworkType",
     pending_update_count = pending_update_count,
@@ -2978,45 +2609,37 @@ local function setNetworkType(type, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.setNetworkType = setNetworkType
-
 -- Returns network data usage statistics.
 -- Can be called before authorization
 -- @only_current If true, returns only data for the current library launch
-local function getNetworkStatistics(only_current, cb, cmd)
+function I.getNetworkStatistics(only_current, cb, cmd)
   tdbot_function ({
     _ = "getNetworkStatistics",
     only_current = only_current
   }, cb or dl_cb, cmd)
 end
 
-I.getNetworkStatistics = getNetworkStatistics
-
 -- Adds specified data to data usage statistics. Can be called before authorization
 -- @entry Network statistics entry with a data to add to statistics
-local function addNetworkStatistics(entry, cb, cmd)
+function I.addNetworkStatistics(entry, cb, cmd)
   tdbot_function ({
     _ = "addNetworkStatistics",
     entry = entry
   }, cb or dl_cb, cmd)
 end
 
-I.addNetworkStatistics = addNetworkStatistics
-
 -- Resets all network data usage statistics to zero. Can be called before authorization
-local function resetNetworkStatistics(cb, cmd)
+function I.resetNetworkStatistics(cb, cmd)
   tdbot_function ({
     _ = "resetNetworkStatistics"
   }, cb or dl_cb, cmd)
 end
 
-I.resetNetworkStatistics = resetNetworkStatistics
---[[
 -- Bots only.
 -- Informs server about number of pending bot updates if they aren't processed for a long time
 -- @pending_update_count Number of pending updates
 -- @error_message Last error's message
-local function setBotUpdatesStatus(pending_update_count, error_message, cb, cmd)
+function I.setBotUpdatesStatus(pending_update_count, error_message, cb, cmd)
   tdbot_function ({
     _ = "setBotUpdatesStatus",
     pending_update_count = pending_update_count,
@@ -3024,22 +2647,18 @@ local function setBotUpdatesStatus(pending_update_count, error_message, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.setBotUpdatesStatus = setBotUpdatesStatus
-
 -- Bots only.
 -- Uploads a png image with a sticker.
 -- Returns uploaded file
 -- @user_id Sticker file owner
 -- @png_sticker Png image with the sticker, must be up to 512 kilobytes in size and fit in 512x512 square
-local function uploadStickerFile(user_id, png_sticker, cb, cmd)
+function I.uploadStickerFile(user_id, png_sticker, cb, cmd)
   tdbot_function ({
     _ = "setBotUpdatesStatus",
     user_id = user_id,
     png_sticker = getInputFile(png_sticker)
   }, cb or dl_cb, cmd)
 end
-
-I.uploadStickerFile = uploadStickerFile
 
 -- Bots only.
 -- Creates new sticker set.
@@ -3048,7 +2667,7 @@ I.uploadStickerFile = uploadStickerFile
 -- @title Sticker set title, 1-64 characters
 -- @name Sticker set name. Can contain only english letters, digits and underscores. Should end on *"_by_<bot username>"*. *<bot_username>* is case insensitive, 1-64 characters
 -- @is_masks True, is stickers are masks @stickers List of stickers to add to the set
-local function createNewStickerSet(user_id, title, name, is_masks, stickers, cb, cmd)
+function I.createNewStickerSet(user_id, title, name, is_masks, stickers, cb, cmd)
   tdbot_function ({
     _ = "createNewStickerSet",
     user_id = user_id,
@@ -3058,8 +2677,6 @@ local function createNewStickerSet(user_id, title, name, is_masks, stickers, cb,
     stickers = stickers -- vector <inputSticker>
   }, cb or dl_cb, cmd)
 end
-
-I.createNewStickerSet = createNewStickerSet
 
 -- Bots only.
 -- Adds new sticker to a set.
@@ -3073,7 +2690,7 @@ I.createNewStickerSet = createNewStickerSet
 -- @x_shift Shift by X-axis measured in widths of the mask scaled to the face size, from left to right. For example, choosing -1.0 will place mask just to the left of the default mask position
 -- @y_shift Shift by Y-axis measured in heights of the mask scaled to the face size, from top to bottom. For example, 1.0 will place the mask just below the default mask position.
 -- @scale Mask scaling coefficient. For example, 2.0 means double size
-local function addStickerToSet(user_id, name, png_sticker, emojis, point, x_shift, y_shift, scale, cb, cmd)
+function I.addStickerToSet(user_id, name, png_sticker, emojis, point, x_shift, y_shift, scale, cb, cmd)
   tdbot_function ({
     _ = "addStickerToSet",
     user_id = user_id,
@@ -3093,13 +2710,11 @@ local function addStickerToSet(user_id, name, png_sticker, emojis, point, x_shif
   }, cb or dl_cb, cmd)
 end
 
-I.addStickerToSet = addStickerToSet
-
 -- Bots only. Changes position of a sticker in the set it belongs to.
 -- Sticker set should be created by the bot
 -- @sticker The sticker
 -- @position New sticker position in the set, zero-based
-local function setStickerPositionInSet(sticker, position, cb, cmd)
+function I.setStickerPositionInSet(sticker, position, cb, cmd)
   tdbot_function ({
     _ = "setStickerPositionInSet",
     sticker = getInputFile(sticker),
@@ -3107,26 +2722,22 @@ local function setStickerPositionInSet(sticker, position, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.setStickerPositionInSet = setStickerPositionInSet
-
 -- Bots only.
 -- Deletes a sticker from the set it belongs to.
 -- Sticker set should be created by the bot
 -- @sticker The sticker
-local function deleteStickerFromSet(sticker, cb, cmd)
+function I.deleteStickerFromSet(sticker, cb, cmd)
   tdbot_function ({
     _ = "deleteStickerFromSet",
     sticker = getInputFile(sticker)
   }, cb or dl_cb, cmd)
 end
 
-I.deleteStickerFromSet = deleteStickerFromSet
-
 -- Bots only.
 -- Sends custom request
 -- @method Method name
 -- @parameters JSON-serialized method parameters
-local function sendCustomRequest(method, parameters, cb, cmd)
+function I.sendCustomRequest(method, parameters, cb, cmd)
   tdbot_function ({
     _ = "sendCustomRequest",
     method = method,
@@ -3134,13 +2745,11 @@ local function sendCustomRequest(method, parameters, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.sendCustomRequest = sendCustomRequest
-
 -- Bots only.
 -- Answers a custom query
 -- @custom_queryid Identifier of a custom query
 -- @data JSON-serialized answer to the query
-local function answerCustomQuery(custom_query_id, data, cb, cmd)
+function I.answerCustomQuery(custom_query_id, data, cb, cmd)
   tdbot_function ({
     _ = "answerCustomQuery",
     custom_query_id = custom_query_id,
@@ -3148,37 +2757,29 @@ local function answerCustomQuery(custom_query_id, data, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.answerCustomQuery = answerCustomQuery
-]]
 -- Returns Ok after specified amount of the time passed
 -- Can be called before authorization
 -- @seconds Number of seconds before that function returns
-local function setAlarm(seconds, cb, cmd)
+function I.setAlarm(seconds, cb, cmd)
   tdbot_function ({
     _ = "setAlarm",
     seconds = seconds
   }, cb or dl_cb, cmd)
 end
 
-I.setAlarm = setAlarm
-
 -- Returns invite text for invitation of new users
-local function getInviteText(cb, cmd)
+function I.getInviteText(cb, cmd)
   tdbot_function ({
     _ = "getInviteText",
   }, cb or dl_cb, cmd)
 end
 
-I.getInviteText = getInviteText
-
 -- Returns terms of service. Can be called before authorization
-local function getTermsOfService(cb, cmd)
+function I.getTermsOfService(cb, cmd)
   tdbot_function ({
     _ = "getTermsOfService",
   }, cb or dl_cb, cmd)
 end
-
-I.getTermsOfService = getTermsOfService
 
 -- description Sets proxy server for network requests.
 -- Can be called before authorization
@@ -3189,7 +2790,7 @@ I.getTermsOfService = getTermsOfService
 -- @username Username to log in
 -- @password Password to log in
 
-local function setProxy(server, port, username, password, cb, cmd)
+function I.setProxy(server, port, username, password, cb, cmd)
   if not server or port or username or password then
     proxy = {_ = "proxyEmpty"}
   else
@@ -3207,16 +2808,13 @@ local function setProxy(server, port, username, password, cb, cmd)
   }, cb or dl_cb, cmd)
 end
 
-I.setProxy = setProxy
-
 -- Returns current set up proxy. Can be called before authorization
-local function getProxy(cb, cmd)
+function I.getProxy(cb, cmd)
   tdbot_function ({
     _ = "getProxy",
   }, cb or dl_cb, cmd)
 end
 
-I.getProxy = getProxy
 -- Text message
 -- @chat_id Chat to send message
 -- @reply_to_message_id Identifier of a message to reply to or 0
@@ -3228,7 +2826,7 @@ I.getProxy = getProxy
 -- @clear_draft Pass true if chat draft message should be deleted
 -- @entities Bold, Italic, Code, Pre, PreCode and TextUrl entities contained in the text. Non-bot users can't use TextUrl entities. Can't be used with non-null parse_mode
 -- @parse_mode Text parse mode, nullable. Can't be used along with enitities
-local function sendText(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, text, disable_web_page_preview, parse_mode, cb, cmd)
+function I.sendText(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, text, disable_web_page_preview, parse_mode, cb, cmd)
   local TextParseMode = getParseMode(parse_mode)
   local input_message_content = {
     _ = "inputMessageText",
@@ -3241,8 +2839,6 @@ local function sendText(chat_id, reply_to_message_id, disable_notification, from
   sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
-I.sendText = sendText
-
 -- Animation message
 -- @animation Animation file to send
 -- @thumb Animation thumb, if available
@@ -3250,7 +2846,7 @@ I.sendText = sendText
 -- @width Width of the animation, may be replaced by the server
 -- @height Height of the animation, may be replaced by the server
 -- @caption Animation caption, 0-200 characters
-local function sendAnimation(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, animation, duration, width, height, caption, cb, cmd)
+function I.sendAnimation(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, animation, duration, width, height, caption, cb, cmd)
   local input_message_content = {
     _ = "inputMessageAnimation",
     animation = getInputFile(animation),
@@ -3262,8 +2858,6 @@ local function sendAnimation(chat_id, reply_to_message_id, disable_notification,
   sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
-I.sendAnimation = sendAnimation
-
 -- Audio message
 -- @audio Audio file to send
 -- @album_cover_thumb Thumb of the album's cover, if available
@@ -3271,7 +2865,7 @@ I.sendAnimation = sendAnimation
 -- @title Title of the audio, 0-64 characters, may be replaced by the server
 -- @performer Performer of the audio, 0-64 characters, may be replaced by the server
 -- @caption Audio caption, 0-200 characters
-local function sendAudio(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, audio, duration, title, performer, caption, cb, cmd)
+function I.sendAudio(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, audio, duration, title, performer, caption, cb, cmd)
   local input_message_content = {
     _ = "inputMessageAudio",
     audio = getInputFile(audio),
@@ -3283,13 +2877,11 @@ local function sendAudio(chat_id, reply_to_message_id, disable_notification, fro
   sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
-I.sendAudio = sendAudio
-
 -- Document message
 -- @document Document to send
 -- @thumb Document thumb, if available
 -- @caption Document caption, 0-200 characters
-local function sendDocument(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, document, caption, cb, cmd)
+function I.sendDocument(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, document, caption, cb, cmd)
   local input_message_content = {
     _ = "inputMessageDocument",
     document = getInputFile(document),
@@ -3298,13 +2890,11 @@ local function sendDocument(chat_id, reply_to_message_id, disable_notification, 
   sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
-I.sendDocument = sendDocument
-
 -- Photo message
 -- @photo Photo to send
 -- @caption Photo caption, 0-200 characters
 -- @ttl Photo TTL in seconds, 0-60. Non-zero TTL can be only specified in private chats
-local function sendPhoto(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, photo, caption, ttl, cb, cmd)
+function I.sendPhoto(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, photo, caption, ttl, cb, cmd)
   local input_message_content = {
     _ = "inputMessagePhoto",
     photo = getInputFile(photo),
@@ -3317,12 +2907,10 @@ local function sendPhoto(chat_id, reply_to_message_id, disable_notification, fro
   sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
-I.sendPhoto = sendPhoto
-
 -- Sticker message
 -- @sticker Sticker to send
 -- @thumb Sticker thumb, if available
-local function sendSticker(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, sticker, cb, cmd)
+function I.sendSticker(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, sticker, cb, cmd)
   local input_message_content = {
     _ = "inputMessageSticker",
     sticker = getInputFile(sticker),
@@ -3332,8 +2920,6 @@ local function sendSticker(chat_id, reply_to_message_id, disable_notification, f
   sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
-I.sendSticker = sendSticker
-
 -- Video message
 -- @video Video to send
 -- @thumb Video thumb, if available
@@ -3342,7 +2928,7 @@ I.sendSticker = sendSticker
 -- @height Video height
 -- @caption Video caption, 0-200 characters
 -- @ttl Video TTL in seconds, 0-60. Non-zero TTL can be only specified in private chats
-local function sendVideo(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, video, duration, width, height, caption, ttl, cb, cmd)
+function I.sendVideo(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, video, duration, width, height, caption, ttl, cb, cmd)
   local input_message_content = {
     _ = "inputMessageVideo",
     video = getInputFile(video),
@@ -3356,14 +2942,12 @@ local function sendVideo(chat_id, reply_to_message_id, disable_notification, fro
   sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
-I.sendVideo = sendVideo
-
 -- Video note message
 -- @video_note Video note to send
 -- @thumb Video thumb, if available
 -- @duration Duration of the video in seconds
 -- @length Video width and height, should be positive and not greater than 640
-local function sendVideoNote(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, video_note, duration, length, cb, cmd)
+function I.sendVideoNote(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, video_note, duration, length, cb, cmd)
   if not length or length > 640 then
     length = 640
   end
@@ -3377,14 +2961,12 @@ local function sendVideoNote(chat_id, reply_to_message_id, disable_notification,
   sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
-I.sendVideo = sendVideoNote
-
 -- Voice message
 -- @voice Voice file to send
 -- @duration Duration of the voice in seconds
 -- @waveform Waveform representation of the voice in 5-bit format
 -- @caption Voice caption, 0-200 characters
-local function sendVoice(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, voice, duration, waveform, caption, cb, cmd)
+function I.sendVoice(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, voice, duration, waveform, caption, cb, cmd)
   local input_message_content = {
     _ = "inputMessageVoice",
     voice = getInputFile(voice),
@@ -3395,12 +2977,10 @@ local function sendVoice(chat_id, reply_to_message_id, disable_notification, fro
   sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
-I.sendVoice = sendVoice
-
 -- Message with location
 -- @latitude Latitude of location in degrees as defined by sender
 -- @longitude Longitude of location in degrees as defined by sender
-local function sendLocation(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, latitude, longitude, cb, cmd)
+function I.sendLocation(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, latitude, longitude, cb, cmd)
   local input_message_content = {
     _ = "inputMessageLocation",
     location = {
@@ -3412,8 +2992,6 @@ local function sendLocation(chat_id, reply_to_message_id, disable_notification, 
   sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
-I.sendLocation = sendLocation
---[[
 -- Message with information about venue
 -- @venue Venue to send
 -- @latitude Latitude of location in degrees as defined by sender
@@ -3422,7 +3000,7 @@ I.sendLocation = sendLocation
 -- @address Venue address as defined by sender
 -- @provider Provider of venue database as defined by sender. Only "foursquare" need to be supported currently
 -- @id Identifier of the venue in provider database as defined by sender
-local function sendVenue(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, latitude, longitude, title, address, id, cb, cmd)
+function I.sendVenue(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, latitude, longitude, title, address, id, cb, cmd)
   local input_message_content = {
     _ = "inputMessageVenue",
     venue = {
@@ -3441,16 +3019,13 @@ local function sendVenue(chat_id, reply_to_message_id, disable_notification, fro
   sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
-I.sendVenue = sendVenue
-]]
-
 -- User contact message
 -- @contact Contact to send
 -- @phone_number User's phone number
 -- @first_name User first name, 1-255 characters
 -- @last_name User last name
 -- @user_id User identifier if known, 0 otherwise
-local function sendContact(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, phone_number, first_name, last_name, user_id, cb, cmd)
+function I.sendContact(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, phone_number, first_name, last_name, user_id, cb, cmd)
   local input_message_content = {
     _ = "inputMessageContact",
     contact = {
@@ -3464,12 +3039,10 @@ local function sendContact(chat_id, reply_to_message_id, disable_notification, f
   sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
-I.sendContact = sendContact
-
 -- Message with a game
 -- @bot_user_id User identifier of a bot owned the game
 -- @game_short_name Game short name
-local function sendGame(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, bot_user_id, game_short_name, cb, cmd)
+function I.sendGame(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, bot_user_id, game_short_name, cb, cmd)
   local input_message_content = {
     _ = "inputMessageGame",
     bot_user_id = bot_user_id,
@@ -3478,8 +3051,6 @@ local function sendGame(chat_id, reply_to_message_id, disable_notification, from
   sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
-I.sendGame = sendGame
---[[
 -- Message with an invoice, can be used only by bots and in private chats only
 -- @prices List of objects used to calculate total price
 -- @currency ISO 4217 currency code
@@ -3498,7 +3069,7 @@ I.sendGame = sendGame
 -- @payload Invoice payload
 -- @provider_token Payments provider token
 -- @start_parameter Unique invoice bot start_parameter for generation of this invoice
-local function sendInvoice(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, currency, prices, is_test, need_name, need_phone_number, need_email, need_shipping_address, is_flexible, title, description,  photourl, photosize,  photowidth, photoheight, payload, provider_token, start_parameter, cb, cmd)
+function I.sendInvoice(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, currency, prices, is_test, need_name, need_phone_number, need_email, need_shipping_address, is_flexible, title, description,  photourl, photosize,  photowidth, photoheight, payload, provider_token, start_parameter, cb, cmd)
   local input_message_content = {
     _ = "inputMessageInvoice",
     invoice = {
@@ -3525,12 +3096,10 @@ local function sendInvoice(chat_id, reply_to_message_id, disable_notification, f
   sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
-I.sendInvoice = sendInvoice
-]]
 -- Forwarded message
 -- @from_chat_id Chat identifier of the message to forward
 -- @message_id Identifier of the message to forward
-local function sendForwarded(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, from_chat_id, message_id, cb, cmd)
+function I.sendForwarded(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, from_chat_id, message_id, cb, cmd)
   local input_message_content = {
     _ = "inputMessageForwarded",
     from_chat_id = from_chat_id,
@@ -3539,7 +3108,5 @@ local function sendForwarded(chat_id, reply_to_message_id, disable_notification,
   }
   sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
-
-I.sendForwarded = sendForwarded
 
 return I
