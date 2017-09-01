@@ -30,7 +30,7 @@ end
 -- @chat_id = user, group, channel, and broadcast
 -- @group_id = normal group
 -- @channel_id = channel and broadcast
-local function getChatId(chat_id)
+function getChatId(chat_id)
   local chat = {}
   local chat_id = tostring(chat_id)
 
@@ -45,7 +45,7 @@ local function getChatId(chat_id)
   return chat
 end
 
-local function getInputFile(file)
+function getInputFile(file)
   local input = tostring(file)
 
   if input:match('/') then
@@ -60,8 +60,8 @@ local function getInputFile(file)
 end
 
 -- User can send bold, italic, and monospace text uses HTML or Markdown format.
-local function getParseMode(parse_mode)
-  local P
+function getParseMode(parse_mode)
+  local P = nil
   if parse_mode then
     local mode = parse_mode:lower()
 
@@ -75,8 +75,8 @@ local function getParseMode(parse_mode)
   return P
 end
 
--- Send SendMessage request
-local function sendRequest(request_id, chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
+-- Send sendMessage request
+function sendRequest(request_id, chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
   tdbot_function ({
     _ = request_id,
     chat_id = chat_id,
@@ -1094,7 +1094,7 @@ local function getCallbackQueryAnswer(chat_id, message_id, text, show_alert, url
 end
 
 I.getCallbackQueryAnswer = getCallbackQueryAnswer
-
+--[[
 -- Bots only.
 -- Sets result of a callback query
 -- @callback_queryid Identifier of the callback query
@@ -1114,6 +1114,7 @@ local function answerCallbackQuery(callback_query_id, text, show_alert, url, cac
 end
 
 I.answerCallbackQuery = answerCallbackQuery
+
 
 -- Bots only.
 -- Sets result of a shipping query @shipping_queryid Identifier of the shipping query
@@ -1230,7 +1231,7 @@ local function deleteChatReplyMarkup(chat_id, message_id, cb, cmd)
 end
 
 I.deleteChatReplyMarkup = deleteChatReplyMarkup
-
+]]
 -- Sends notification about user activity in a chat
 -- @chat_id Chat identifier
 -- @action Action description
@@ -1737,7 +1738,7 @@ local function importChatInviteLink(invite_link, cb, cmd)
 end
 
 I.importChatInviteLink = importChatInviteLink
-
+--[[
 -- Creates new call @user_id Identifier of user to call
 -- @protocol Description of supported by the client call protocols
 -- @udp_p2p True, if UDP peer to peer connections are supported
@@ -1820,6 +1821,7 @@ local function rateCall(user_id, rating, comment, cb, cmd)
 end
 
 I.rateCall = rateCall
+]]
 
 -- Sends call debug information
 -- @call_id Call identifier
@@ -3009,7 +3011,7 @@ local function resetNetworkStatistics(cb, cmd)
 end
 
 I.resetNetworkStatistics = resetNetworkStatistics
-
+--[[
 -- Bots only.
 -- Informs server about number of pending bot updates if they aren't processed for a long time
 -- @pending_update_count Number of pending updates
@@ -3053,7 +3055,7 @@ local function createNewStickerSet(user_id, title, name, is_masks, stickers, cb,
     title = title,
     name = name,
     is_masks = is_masks,
-    stickers = stickers-- vector <inputSticker>
+    stickers = stickers -- vector <inputSticker>
   }, cb or dl_cb, cmd)
 end
 
@@ -3147,7 +3149,7 @@ local function answerCustomQuery(custom_query_id, data, cb, cmd)
 end
 
 I.answerCustomQuery = answerCustomQuery
-
+]]
 -- Returns Ok after specified amount of the time passed
 -- Can be called before authorization
 -- @seconds Number of seconds before that function returns
@@ -3236,7 +3238,7 @@ local function sendText(chat_id, reply_to_message_id, disable_notification, from
     entities = {},
     parse_mode = TextParseMode,
   }
-  sendRequest('SendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
+  sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
 I.sendText = sendText
@@ -3257,7 +3259,7 @@ local function sendAnimation(chat_id, reply_to_message_id, disable_notification,
     height = 0,
     caption = caption
   }
-  sendRequest('SendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
+  sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
 I.sendAnimation = sendAnimation
@@ -3278,7 +3280,7 @@ local function sendAudio(chat_id, reply_to_message_id, disable_notification, fro
     performer = performer,
     caption = caption
   }
-  sendRequest('SendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
+  sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
 I.sendAudio = sendAudio
@@ -3293,7 +3295,7 @@ local function sendDocument(chat_id, reply_to_message_id, disable_notification, 
     document = getInputFile(document),
     caption = caption
   }
-  sendRequest('SendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
+  sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
 I.sendDocument = sendDocument
@@ -3312,7 +3314,7 @@ local function sendPhoto(chat_id, reply_to_message_id, disable_notification, fro
     caption = caption,
     ttl = ttl or 0
   }
-  sendRequest('SendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
+  sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
 I.sendPhoto = sendPhoto
@@ -3327,7 +3329,7 @@ local function sendSticker(chat_id, reply_to_message_id, disable_notification, f
     width = 0,
     height = 0
   }
-  sendRequest('SendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
+  sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
 I.sendSticker = sendSticker
@@ -3351,7 +3353,7 @@ local function sendVideo(chat_id, reply_to_message_id, disable_notification, fro
     caption = caption,
     ttl = ttl or 0
   }
-  sendRequest('SendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
+  sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
 I.sendVideo = sendVideo
@@ -3372,7 +3374,7 @@ local function sendVideoNote(chat_id, reply_to_message_id, disable_notification,
     duration = duration or 0,
     length = length
   }
-  sendRequest('SendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
+  sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
 I.sendVideo = sendVideoNote
@@ -3390,7 +3392,7 @@ local function sendVoice(chat_id, reply_to_message_id, disable_notification, fro
     waveform = waveform,
     caption = caption
   }
-  sendRequest('SendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
+  sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
 I.sendVoice = sendVoice
@@ -3407,11 +3409,11 @@ local function sendLocation(chat_id, reply_to_message_id, disable_notification, 
       longitude = longitude
     },
   }
-  sendRequest('SendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
+  sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
 I.sendLocation = sendLocation
-
+--[[
 -- Message with information about venue
 -- @venue Venue to send
 -- @latitude Latitude of location in degrees as defined by sender
@@ -3436,10 +3438,11 @@ local function sendVenue(chat_id, reply_to_message_id, disable_notification, fro
       id = id
     },
   }
-  sendRequest('SendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
+  sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
 I.sendVenue = sendVenue
+]]
 
 -- User contact message
 -- @contact Contact to send
@@ -3458,7 +3461,7 @@ local function sendContact(chat_id, reply_to_message_id, disable_notification, f
       user_id = user_id
     },
   }
-  sendRequest('SendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
+  sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
 I.sendContact = sendContact
@@ -3472,11 +3475,11 @@ local function sendGame(chat_id, reply_to_message_id, disable_notification, from
     bot_user_id = bot_user_id,
     game_short_name = game_short_name
   }
-  sendRequest('SendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
+  sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
 I.sendGame = sendGame
-
+--[[
 -- Message with an invoice, can be used only by bots and in private chats only
 -- @prices List of objects used to calculate total price
 -- @currency ISO 4217 currency code
@@ -3519,11 +3522,11 @@ local function sendInvoice(chat_id, reply_to_message_id, disable_notification, f
     provider_token = provider_token,
     start_parameter = start_parameter
   }
-  sendRequest('SendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
+  sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
 I.sendInvoice = sendInvoice
-
+]]
 -- Forwarded message
 -- @from_chat_id Chat identifier of the message to forward
 -- @message_id Identifier of the message to forward
@@ -3534,7 +3537,7 @@ local function sendForwarded(chat_id, reply_to_message_id, disable_notification,
     message_id = message_id,
     in_game_share = in_game_share
   }
-  sendRequest('SendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
+  sendRequest('sendMessage', chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, input_message_content, cb, cmd)
 end
 
 I.sendForwarded = sendForwarded
