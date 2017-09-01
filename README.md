@@ -1,6 +1,6 @@
 # tdbot.lua
 A simple Lua library for the [`telegram-bot`](https://valtman.name/telegram-bot).
-just an update based on [`telegram-bot`](https://github.com/rizaumami/tdcli.lua) for new TG.
+just an update based on [`telegram-cli library`](https://github.com/rizaumami/tdcli.lua) for new TG.
 
 documentation >> [soon...](https://github.com/i-naji/tdbot.lua/wiki) 
 
